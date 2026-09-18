@@ -1,5 +1,5 @@
 // Серверная функция /api/generate-sketch (Vercel и локальный serve.js).
-// Конвейер: Cloudflare Workers AI — один вызов анализа описания + один вызов генерации (FLUX.2 dev).
+// Конвейер: Cloudflare Workers AI — один вызов анализа описания + один вызов генерации (FLUX.1 schnell, быстрая).
 // Ключи берутся только из переменных окружения CLOUDFLARE_ACCOUNT_ID и CLOUDFLARE_API_TOKEN.
 
 const DESIGN_ANALYST_PROMPT = `You are the semantic design-analysis stage of a professional product visualization system.
@@ -83,13 +83,13 @@ async function analyzeBrief(brief, accountId, token) {
 async function generateImage(prompt, refs, accountId, token) {
   const form = new FormData();
   form.append('prompt', prompt);
-  form.append('steps', '25');
+  form.append('steps', '4');
   form.append('guidance', '6');
   form.append('width', '1024');
   form.append('height', '768');
   refs.forEach((dataUrl, i) => form.append(`input_image_${i}`, dataUrlToBlob(dataUrl, i), `reference-${i + 1}.png`));
 
-  const r = await fetch(cfUrl(accountId, '@cf/black-forest-labs/flux-2-dev'), {
+  const r = await fetch(cfUrl(accountId, '@cf/black-forest-labs/flux-1-schnell'), {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
     body: form,
