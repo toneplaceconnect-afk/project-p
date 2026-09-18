@@ -213,6 +213,17 @@ html.js [data-fade-up] { visibility: hidden; }
 }
 .hero__text { display: flex; flex-direction: column; width: 100%; }
 .hero__title { align-self: flex-start; font-size: 13rem; overflow: hidden; }
+/* Название: «ПРОЕКТЪ» — обозначение проекта (вторичная строка), «ЖЕЛѢЗО» — имя бренда (главный акцент).
+   Контраст двух начертаний сохранён: гротеск против тяжёлой антиквы. */
+.hero__mark {
+  display: block; font-weight: 300;
+  font-size: 0.45em; line-height: 1; letter-spacing: -0.026em;
+  margin-bottom: 0.12em;
+}
+.hero__brand {
+  display: block; font-weight: 700; font-size: 0.94em;
+  line-height: 0.86; letter-spacing: -0.015em; white-space: nowrap;
+}
 .hero__baseline { color: var(--wheat); max-width: 60rem; font-family: var(--ff-serif); font-size: 1.5rem; line-height: 1.5; }
 .scroll-down { position: absolute; right: 2rem; bottom: 2rem; color: var(--wheat); cursor: pointer; }
 .scroll-down p { font-family: var(--ff-sans); font-size: 0.875rem; line-height: 1.1; text-align: center; }
@@ -409,7 +420,7 @@ html.js [data-fade-up] { visibility: hidden; }
 .footer__legal { display: flex; font-size: 0.875rem; gap: calc(1.5rem * var(--sc)); }
 /* Подпись разработчика */
 .fcredit { display: inline-flex; align-items: center; gap: 0.55em; font-size: 0.875rem; color: var(--dim); transition: color 0.3s ease-in-out; }
-.fcredit__mark { flex: none; width: 1.15em; height: 1.15em; }
+.fcredit__mark { flex: none; width: 1.75em; height: 1.3em; }
 .fcredit__logo { flex: none; width: auto; height: 1.6em; display: block; }
 .fcredit strong { font-weight: 400; color: var(--white); }
 a.fcredit:hover { color: var(--wheat); }
@@ -518,17 +529,21 @@ a.fcredit:hover strong { color: var(--wheat); }
 html:not(.js) .loader { display: none; }
 .loader {
   position: fixed; inset: 0; z-index: 10000;
-  display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
   background: var(--black);
   -webkit-clip-path: polygon(0% 0%, 100% 0%, 100% var(--clip), 0 var(--clip));
   clip-path: polygon(0% 0%, 100% 0%, 100% var(--clip), 0 var(--clip));
 }
 .loader--inner { display: block; background: var(--black-light); }
-.loader__content { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; margin-top: 5rem; }
+.loader__content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; row-gap: calc(1.6rem * var(--sc)); }
 .loader__wheel { display: flex; justify-content: center; align-items: center; width: 5em; height: 2.5em; overflow: hidden; }
-.loader__txt { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: calc(0.25rem * var(--sc)); justify-content: flex-start; }
+/* Экран загрузки: колесо, под ним название одной строкой, ниже счётчик */
+.loader__txt { display: flex; flex-direction: column; align-items: center; row-gap: calc(1.25rem * var(--sc)); padding: 0 var(--pp); text-align: center; }
 .loader__word, .loader__num { font-family: var(--ff-serif); font-size: 3.25rem; font-weight: 300; line-height: 1; letter-spacing: -0.03em; }
-.loader__left { text-align: right; }
+.loader__word { display: flex; flex-direction: column; align-items: center; row-gap: 0.1em; white-space: nowrap; }
+/* «ПРОЕКТЪ» — как в подвале: то же начертание и та же пропорция к имени бренда */
+.loader__mark { font-weight: 300; font-size: 0.475em; line-height: 1; letter-spacing: -0.026em; }
+.loader__brand { font-weight: 700; line-height: 1; }
 .loader__num { font-weight: 400; }
 .loader__bg { position: absolute; inset: 0; z-index: 0; opacity: 0.5; width: 100%; height: 100%; }
 @media (max-width: 991px) { .loader__word, .loader__num { font-size: 2.8rem; } }
@@ -545,13 +560,25 @@ html:not(.js) .loader { display: none; }
   transition: transform 0.25s ease-in-out, opacity 0.1s;
 }
 .cursor.-pointer .cursor__inner::before { transform: scale(0.15); }
-.cursor.-text .cursor__inner::before { opacity: 0.85; transform: scale(1.7); }
-.cursor.-text.-active .cursor__inner::before { transform: scale(1.6); transition-duration: 0.2s; }
+/* Наведение на крупный текст: круг переходит в режим разницы цветов — буквы под ним выворачиваются,
+   это и читается как «лупа». Как в эталонном сайте. */
+@supports (mix-blend-mode: difference) {
+  .cursor.-fusion, .cursor.-fusion-big { mix-blend-mode: difference; }
+  .cursor.-fusion .cursor__inner::before { transform: scale(1.5); }
+  .cursor.-fusion-big .cursor__inner::before { transform: scale(2.5); }
+}
+/* Состояние с подписью («Смотреть», «Листай»): затемняющая линза с лёгким размытием */
+.cursor.-text { mix-blend-mode: normal; }
+.cursor.-text .cursor__inner::before {
+  background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(1px); -webkit-backdrop-filter: blur(1px);
+  opacity: 1; transform: scale(2.5);
+}
+.cursor.-text.-active .cursor__inner::before { transform: scale(2.35); transition-duration: 0.2s; }
 .cursor.-hidden .cursor__inner::before { transform: scale(0); }
 .cursor__text {
   position: absolute; top: -18px; left: -18px; width: 36px; height: 36px;
   display: flex; align-items: center; justify-content: center;
-  color: var(--black); font: 400 15px/20px var(--ff-serif); letter-spacing: -0.02em; text-align: center; white-space: nowrap;
+  color: var(--wheat); font: 400 15px/20px var(--ff-serif); letter-spacing: -0.02em; text-align: center; white-space: nowrap;
   opacity: 0; transform: scale(0) rotate(10deg); transition: opacity 0.4s, transform 0.3s;
 }
 .cursor.-text .cursor__text { opacity: 1; transform: scale(1); }
@@ -837,11 +864,8 @@ html:not(.js) .loader { display: none; }
 .topbar .link-u:hover, .topbar .link-u.is-current { color: var(--wheat); }
 .topbar .btn__text { font-family: var(--ff-sans); }
 
-/* Заставка загрузки: название проекта и проценты */
-.loader__txt { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; column-gap: 0.6em; row-gap: 0.4rem; padding: 0 var(--pp); text-align: center; }
-.loader__left { text-align: center; }
-.loader__num { font-variant-numeric: tabular-nums; color: var(--wheat); min-width: 3.2ch; text-align: left; }
-@media (max-width: 479px) { .loader__num { text-align: center; } }
+/* Заставка загрузки: счётчик под названием */
+.loader__num { font-variant-numeric: tabular-nums; color: var(--wheat); min-width: 3.2ch; text-align: center; }
 
 /* Список направлений в блоке «Направления работ» */
 .team__right-wrap--dirs { gap: calc(3rem * var(--sc)); }

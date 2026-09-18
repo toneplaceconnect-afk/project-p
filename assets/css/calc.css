@@ -100,3 +100,64 @@
   .calc__row-label, .calc__row-value, .calc__summary, .calc__title, .calc__note, .calc__label { color: #000 !important; }
   .calc__input { background: #fff; color: #000; border-color: #999; }
 }
+
+/* =========================================================
+   «Рассчитать с ИИ» — свободное описание задачи
+   ========================================================= */
+.cai { margin-bottom: calc(2.5rem * var(--sc)); border: 1px solid rgba(246, 232, 191, 0.2); border-radius: var(--radius); background: rgba(246, 232, 191, 0.03); overflow: hidden; }
+.cai__toggle {
+  display: flex; align-items: center; gap: 0.9rem; width: 100%; padding: calc(1.4rem * var(--sc)) calc(1.8rem * var(--sc));
+  background: none; border: 0; color: var(--white); text-align: left; cursor: pointer;
+  font-family: var(--ff-serif); font-size: 1.5rem; font-weight: 300; letter-spacing: -0.02em;
+  transition: background-color 0.3s ease;
+}
+.cai__toggle:hover { background: rgba(246, 232, 191, 0.06); }
+.cai__toggle-plus { position: relative; flex: none; width: 1.1rem; height: 1.1rem; }
+.cai__toggle-plus::before, .cai__toggle-plus::after {
+  content: ""; position: absolute; inset: 50% 0 auto 0; height: 1px; background: var(--wheat); transition: transform 0.3s ease;
+}
+.cai__toggle-plus::after { transform: rotate(90deg); }
+.cai.is-open .cai__toggle-plus::after { transform: rotate(0deg); }
+.cai__toggle-note { font-family: var(--ff-sans); font-size: 0.875rem; color: var(--dim); letter-spacing: 0; }
+.cai__panel { padding: 0 calc(1.8rem * var(--sc)) calc(1.8rem * var(--sc)); border-top: 1px solid rgba(246, 232, 191, 0.2); }
+.cai__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: calc(2rem * var(--sc)); padding-top: calc(1.6rem * var(--sc)); }
+.cai__lead { color: var(--dim); font-size: 0.9375rem; margin-bottom: 1rem; }
+.cai__textarea { min-height: 8rem; }
+.cai__submit-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1rem; }
+/* Сноска раздела: отделена от формы линией и отступом, а не прилипает к кнопке */
+.cai__note { max-width: 46rem; margin-top: calc(1.6rem * var(--sc)); padding-top: calc(1.2rem * var(--sc)); border-top: 1px solid rgba(246, 232, 191, 0.2); }
+.cai__result { display: flex; flex-direction: column; justify-content: center; min-height: 12rem; border: 1px solid rgba(246, 232, 191, 0.2); border-radius: var(--radius); padding: calc(1.4rem * var(--sc)); background: var(--black); }
+.cai__placeholder { color: var(--dim); font-size: 0.9375rem; text-align: center; }
+.cai__sheet { display: flex; flex-direction: column; gap: 1rem; }
+.cai__sheet-head { display: flex; flex-direction: column; gap: 0.35rem; }
+.cai__unit { color: var(--dim); }
+.cai__assumptions { display: flex; flex-direction: column; gap: 0.5rem; }
+.cai__list { display: flex; flex-direction: column; gap: 0.35rem; color: var(--dim); font-size: 0.875rem; }
+.cai__list li { position: relative; padding-left: 1rem; }
+.cai__list li::before { content: "—"; position: absolute; left: 0; color: var(--wheat); }
+@media (min-width: 992px) {
+  .cai__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+@media (max-width: 767px) {
+  /* на телефоне приписка уходит под заголовок, а не жмётся сбоку */
+  .cai__toggle { flex-wrap: wrap; gap: 0.6rem 0.8rem; font-size: 1.3rem; }
+  .cai__toggle-note { flex-basis: 100%; padding-left: 1.9rem; }
+}
+
+/* Советы мастера и примечания к строкам ведомости */
+.cai__advice { display: flex; flex-direction: column; gap: 0.5rem; padding: 0.9rem 1rem; border: 1px solid rgba(246, 232, 191, 0.25); border-radius: var(--radius); background: rgba(246, 232, 191, 0.05); }
+.cai__list--advice { color: var(--white); }
+.cai__rownote { display: block; margin-top: 0.15rem; font-size: 0.8125rem; color: var(--dim); }
+
+@media print {
+  /* Печать ведомости ИИ: остаётся только сама ведомость */
+  .cai__toggle, .cai__form, .cai__placeholder { display: none !important; }
+  .cai { border: 0; background: none; margin: 0; }
+  .cai__panel { display: block !important; padding: 0; border: 0; }
+  .cai__grid { display: block; padding: 0; }
+  .cai__result { min-height: 0; padding: 0; border: 0; background: #fff; }
+  .cai__rownote, .cai__unit, .cai__list, .cai__advice { color: #000 !important; }
+  .cai__advice { border-color: #999; background: none; }
+  body.is-print-ai .calc__grid { display: none !important; }
+  body:not(.is-print-ai) .cai { display: none !important; }
+}

@@ -34,9 +34,19 @@
     submitText.textContent = on ? 'Создаём…' : 'Создать визуализацию';
     form.classList.toggle('is-busy', on);
   }
+  const NEEDS_IMAGE = '[data-create-act="download"],[data-create-act="zoom"],[data-create-act="again"],[data-create-act="clear"]';
   function setImage(src) {
     image = src;
-    form.querySelectorAll('[data-create-act="download"],[data-create-act="zoom"]').forEach((b) => (b.disabled = !src));
+    form.querySelectorAll(NEEDS_IMAGE).forEach((b) => (b.disabled = !src));
+  }
+  // Удаление визуализации: картинка убирается, описание остаётся, страница не перезагружается
+  function clearImage() {
+    if (busy) return;
+    closeZoom();
+    setImage('');
+    result.classList.remove('is-loading');
+    result.innerHTML = placeholderHtml;
+    setStatus('Визуализация удалена. Поправьте описание и создайте новую.');
   }
   function updateCount() {
     counter.textContent = textarea.value.length;
@@ -57,20 +67,28 @@
   });
 
   /* ---------- Генерация ---------- */
-  form.addEventListener('submit', async (e) => {
+  let lastPrompt = '';
+
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
+    generate();
+  });
+
+  async function generate(again = false) {
     if (busy) return;
-    const prompt = textarea.value.trim();
+    const prompt = textarea.value.trim() || lastPrompt;
     if (!prompt) {
       setStatus('Сначала опишите, что хотите изготовить.', 'error');
       textarea.focus();
       return;
     }
+    lastPrompt = prompt;
     setBusy(true);
     setImage('');
-    setStatus('Создаём визуализацию — обычно это занимает 20–60 секунд…');
+    setStatus(again ? 'Создаём другой вариант — обычно это занимает 20–60 секунд…' : 'Создаём визуализацию — обычно это занимает 20–60 секунд…');
     result.classList.add('is-loading');
-    result.innerHTML = '<div class="cform__loader"><div class="cform__loader-bar"></div><div>Анализируем описание и рисуем изделие…</div></div>';
+    result.innerHTML = `<div class="cform__loader"><div class="cform__loader-bar"></div><div>${again ? 'Рисуем другой вариант изделия…' : 'Анализируем описание и рисуем изделие…'}</div></div>`;
+    submitText.textContent = again ? 'Создаём…' : submitText.textContent;
 
     try {
       if (location.protocol === 'file:') throw new Error('Генерация работает, когда сайт открыт через сервер (node serve.js) или на хостинге.');
@@ -95,7 +113,7 @@
       img.addEventListener('click', () => openZoom(image));
       result.appendChild(img);
       setImage(src);
-      setStatus('Готово. Скачайте визуализацию или отправьте её мастеру.', 'success');
+      setStatus(again ? 'Готов другой вариант. Не подошёл — нажмите «Создать заново» ещё раз.' : 'Готово. Скачайте визуализацию, пересоздайте её или отправьте мастеру.', 'success');
     } catch (err) {
       result.classList.remove('is-loading');
       result.innerHTML = placeholderHtml;
@@ -103,7 +121,7 @@
     } finally {
       setBusy(false);
     }
-  });
+  }
 
   /* ---------- Действия с результатом ---------- */
   function brief() {
@@ -181,6 +199,8 @@
       if (act === 'zoom') openZoom(image);
       if (act === 'tg') sendTelegram();
       if (act === 'mail') sendMail();
+      if (act === 'again') generate(true);
+      if (act === 'clear') clearImage();
     });
   });
 

@@ -42,7 +42,7 @@
     email: 'Почта', telegram: 'Ник в Telegram', telegramUrl: 'Ссылка на Telegram',
     contactButton: 'Надпись на кнопке в шапке', telegramNote: 'Подпись под Telegram в подвале',
     telegramNoteMenu: 'Подпись под Telegram в меню', chips: 'Плашки в подвале', marquee: 'Бегущая строка',
-    footerNote: 'Приписка в подвале', menuNote: 'Приписка в меню', loaderWord: 'Надпись на экране загрузки',
+    footerNote: 'Приписка в подвале', menuNote: 'Приписка в меню', wordmark: 'Название на сайте (шапка, подвал, экран загрузки)', mark: 'Первая строка — обозначение проекта', brand: 'Вторая строка — имя бренда',
     heroVideo: 'Видео в шапке', heroPoster: 'Заставка видео', alts: 'Подписи к фотографиям (alt)',
     href: 'Ссылка', label: 'Надпись', title: 'Заголовок', text: 'Текст', lead: 'Вводная фраза',
     intro: 'Вступление', sur: 'Надзаголовок', button: 'Надпись на кнопке', buttonHref: 'Куда ведёт кнопка',
@@ -76,7 +76,12 @@
     rows: 'Строки таблицы', special: 'Особые строки', work: 'Вид работ', price: 'Стоимость',
     task: 'Задача калькулятора (код)', ctaSur: 'Надзаголовок врезки', ctaTitle: 'Заголовок врезки',
     ctaText: 'Текст врезки', ctaButton1: 'Первая кнопка', ctaButton2: 'Вторая кнопка', facts: 'Короткие факты',
-    blocks: 'Блоки текста', credit: 'Подпись разработчика в подвале', prefix: 'Текст перед названием',
+    blocks: 'Блоки текста',
+    ai: 'Раздел «Рассчитать с ИИ»', toggle: 'Надпись на кнопке раскрытия', toggleNote: 'Приписка рядом с кнопкой',
+    resultTitle: 'Заголовок результата', assumptionsTitle: 'Заголовок списка допущений',
+    url: 'Адрес сайта (для поисковиков и ссылок)', geo: 'Регион работы (для поисковиков)',
+    region: 'Регион', city: 'Главный город', cities: 'Города и посёлки', lat: 'Широта', lon: 'Долгота',
+    seoTitle: 'Заголовок для поисковика (вкладка браузера)', credit: 'Подпись разработчика в подвале', prefix: 'Текст перед названием',
     name: 'Название студии', url: 'Ссылка на студию (можно оставить пустой)',
     loftPhoto: 'Фото блока «Металл + дерево»', logo: 'Файл логотипа студии (если есть)',
   };
@@ -410,7 +415,7 @@
     });
     var main = $('#main');
     main.innerHTML = '';
-    main.appendChild(el('h1', 'main__title', section.title));
+    main.appendChild(el('h2', 'main__title', section.title));
     if (section.hint) main.appendChild(el('p', 'main__hint', section.hint));
     var path = section.key.split('.');
     main.appendChild(renderValue(path, get(path), section.title));

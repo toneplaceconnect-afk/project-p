@@ -6,7 +6,20 @@
   "headers": [
     {
       "source": "/admin.html",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     }
-  ]
+  ],
+  "functions": {
+    "api/calc-ai.js": {
+      "includeFiles": "content.json"
+    },
+    "api/admin.js": {
+      "includeFiles": "content.json"
+    }
+  }
 }

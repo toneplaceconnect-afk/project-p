@@ -110,15 +110,16 @@ async function generateImage(prompt, accountId, token) {
 }
 
 async function generateSketch(body) {
+  const brief = String(body?.prompt || '').trim();
+  if (!brief) throw new PublicError('Опишите, что хотите изготовить.', 400);
+  if (brief.length > MAX_PROMPT) throw new PublicError(`Описание слишком длинное. Максимум ${MAX_PROMPT} символов.`, 400);
+
   const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
   const token = process.env.CLOUDFLARE_API_TOKEN;
   if (!accountId || !token) {
     throw new PublicError('Генерация не настроена: на сервере нужны переменные CLOUDFLARE_ACCOUNT_ID и CLOUDFLARE_API_TOKEN.', 500);
   }
 
-  const brief = String(body?.prompt || '').trim();
-  if (!brief) throw new PublicError('Опишите, что хотите изготовить.', 400);
-  if (brief.length > MAX_PROMPT) throw new PublicError(`Описание слишком длинное. Максимум ${MAX_PROMPT} символов.`, 400);
 
   let spec = brief;
   let analyzed = false;

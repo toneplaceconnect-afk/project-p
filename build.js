@@ -31,6 +31,13 @@ const WHEEL = `<svg class="wheel" viewBox="0 0 100 60" width="100%" height="100%
 // Логотип: буква π — число «пи»: геометрия, разметка, расчёт.
 // Начертание с засечками — в тон заголовочному шрифту сайта: перекладина с крючками,
 // тонкая левая ножка с завитком, толстая правая с раструбом.
+// Знак студии-разработчика: монограмма наследует цвет строки, акцент — песочный цвет сайта.
+// Рамка обрезана по фигуре, чтобы знак не висел в пустом квадрате.
+const CREDIT_LOGO = `<svg viewBox="16 17 148 108" width="100%" height="100%" role="img" aria-hidden="true">
+<g fill="currentColor"><path d="M22 72C22 43 43 23 70 23H99L84 38H70C51 38 38 51 38 72C38 93 51 106 70 106H84V121H68C42 121 22 101 22 72Z"/><path d="M84 38L99 23H134C149 23 158 34 158 48C158 62 149 72 135 72H108V106H92V55H134C139 55 142 52 142 48C142 43 139 39 134 39H99L84 54V38Z"/></g>
+<path d="M126 76L153 91C157 93 157 98 153 100L126 115C122 117 119 114 119 110V81C119 77 122 74 126 76Z" fill="var(--wheat)"/>
+</svg>`;
+
 const PI_GLYPH = (fill = 'currentColor') => `<g fill="${fill}">
 <path d="M8.5 12.4h47v6.9h-47z"/>
 <path d="M11.7 19.3h4.9l-1 4.3c-.2.85-.65 1.25-1.45 1.25s-1.25-.4-1.45-1.25z"/>
@@ -40,12 +47,9 @@ const PI_GLYPH = (fill = 'currentColor') => `<g fill="${fill}">
 </g>`;
 
 
-// Знак студии-разработчика: инициалы. Если в content.json задан файл логотипа — вместо знака ставится он
-const CREDIT_MARK = `<svg viewBox="0 0 28 28" width="100%" height="100%" fill="none" aria-hidden="true"><rect x=".7" y=".7" width="26.6" height="26.6" rx="7" stroke="currentColor" stroke-width="1.3" opacity=".55"/><text x="14" y="19.6" text-anchor="middle" font-family="Source Serif 4,Georgia,serif" font-size="13.5" font-weight="600" fill="currentColor">ТС</text></svg>`;
-
 // Рамка подогнана под саму букву, чтобы знак не выглядел мелким в шапке
 const LOGO_SMALL = `<svg viewBox="4 8 56 54" width="100%" height="100%" fill="none" role="img" aria-hidden="true">${PI_GLYPH()}</svg>`;
-const LOGO_BIG = `<svg viewBox="0 0 350 160" width="100%" height="100%" fill="none" role="img" aria-hidden="true"><g transform="translate(113 2) scale(1.95)">${PI_GLYPH()}</g><text x="175" y="150" text-anchor="middle" fill="currentColor" font-family="'Source Serif 4',Georgia,serif" font-size="38" font-weight="300" letter-spacing="-1">${S.brand.replace(/^([^-–—\s]+)/, '<tspan font-weight="700">$1</tspan>')}</text></svg>`;
+const LOGO_BIG = `<svg viewBox="0 0 350 232" width="100%" height="100%" fill="none" role="img" aria-hidden="true"><g transform="translate(113 0) scale(1.95)">${PI_GLYPH()}</g><text x="175" y="152" text-anchor="middle" fill="currentColor" font-family="'Source Serif 4',Georgia,serif" font-size="38" font-weight="300" letter-spacing="-1">${S.wordmark.mark}</text><text x="175" y="220" text-anchor="middle" fill="currentColor" font-family="'Source Serif 4',Georgia,serif" font-size="80" font-weight="700" letter-spacing="-2">${S.wordmark.brand}</text></svg>`;
 // Фавикон — только буква, без анимации: значок вкладки анимацию не показывает
 const FAVICON = `<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none"><rect width="64" height="64" rx="12" fill="#181818"/><g transform="translate(32 34.5) scale(.95) translate(-32 -34.5)">${PI_GLYPH('#f6e8bf')}</g></svg>`)}">`;
 
@@ -151,9 +155,10 @@ function worksMenu() {
 function credit() {
   const cr = S.credit;
   if (!cr || !cr.name) return '';
+  // Файл логотипа из админки имеет приоритет над встроенным знаком
   const mark = cr.logo
     ? `<img class="fcredit__logo" src="${cr.logo}" alt="${attr(cr.name)}">`
-    : `<span class="fcredit__mark">${CREDIT_MARK}</span>`;
+    : `<span class="fcredit__mark">${CREDIT_LOGO}</span>`;
   const inner = `${mark}<span class="fcredit__txt">${cr.prefix} «<strong>${cr.name}</strong>»</span>`;
   return cr.url
     ? `<a class="fcredit" href="${cr.url}" target="_blank" rel="noopener" data-cursor="-hidden">${inner}</a>`
@@ -183,7 +188,7 @@ function footer() {
           </div>
         </div>
       </div>
-      <div class="footer__logo-wrap"><a href="index.html" aria-label="${attr(S.brand)}"><div class="footer__logo" data-cursor="-fusion">${LOGO_BIG}</div></a></div>
+      <div class="footer__logo-wrap"><a href="index.html" aria-label="${attr(S.wordmark.mark + ' ' + S.wordmark.brand)}"><div class="footer__logo" data-cursor="-fusion">${LOGO_BIG}</div></a></div>
       <div class="footer__mentions">
         <div class="footer__copy">© <span class="js-year">2026</span> ${S.brand}. ${S.footerNote}</div>
         ${credit()}
@@ -204,8 +209,8 @@ function loader(isHome) {
   <div class="loader__content">
     <div class="loader__wheel">${WHEEL}</div>
     <div class="loader__txt">
-      <div class="loader__left"><div class="loader__word">${S.loaderWord}</div></div>
-      <div><div class="loader__num"><span class="js-loader-num">0</span>%</div></div>
+      <div class="loader__word"><span class="loader__mark">${S.wordmark.mark}</span> <span class="loader__brand">${S.wordmark.brand}</span></div>
+      <div class="loader__num"><span class="js-loader-num">0</span>%</div>
     </div>
   </div>
   <video class="loader__bg" src="${c.media.heroVideo}" poster="${c.media.heroPoster}" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
@@ -331,6 +336,8 @@ function createBlock({ anime = false } = {}) {
           <div class="cform__actions">
             <button class="cform__action" type="button" data-create-act="download" data-cursor="-fusion" disabled>↓ Скачать</button>
             <button class="cform__action" type="button" data-create-act="zoom" data-cursor="-fusion" disabled>⌕ Увеличить</button>
+            <button class="cform__action" type="button" data-create-act="again" data-cursor="-fusion" disabled>↻ Создать заново</button>
+            <button class="cform__action cform__action--danger" type="button" data-create-act="clear" data-cursor="-fusion" disabled>✕ Удалить</button>
             <button class="cform__action cform__action--accent" type="button" data-create-act="tg" data-cursor="-fusion">↗ Отправить в Telegram</button>
             <button class="cform__action" type="button" data-create-act="mail" data-cursor="-fusion">✉ На почту</button>
           </div>
@@ -355,6 +362,44 @@ function aboutColumns(introHtml) {
 }
 
 const processList = (sep = '<br>') => c.process.map((s, i) => `${i + 1}. ${s}`).join(sep);
+
+// Раздел «Рассчитать с ИИ»: свободное описание задачи вместо полей с числами
+function calcAi() {
+  const a = P.calculator.ai;
+  if (!a) return '';
+  return `
+    <section class="cai" data-cai>
+      <button class="cai__toggle" type="button" data-cai-toggle aria-expanded="false" aria-controls="cai-panel" data-cursor="-fusion">
+        <span class="cai__toggle-plus" aria-hidden="true"></span>
+        <span class="cai__toggle-text">${a.toggle}</span>
+        <span class="cai__toggle-note">${a.toggleNote}</span>
+      </button>
+      <div class="cai__panel" id="cai-panel" data-cai-panel hidden>
+        <div class="cai__grid">
+          <div class="cai__form">
+            <p class="cai__lead">${t(a.lead)}</p>
+            <label class="cform__label" for="cai-task">${a.label}</label>
+            <textarea class="cform__textarea cai__textarea" id="cai-task" maxlength="1200" data-cai-task data-lenis-prevent data-cursor="-hidden"
+              placeholder="${attr(a.placeholder)}"></textarea>
+            <div class="cform__examples">
+              <span class="cform__examples-label">Примеры:</span>
+              ${(a.examples || []).map((e) => `<button class="cform__chip" type="button" data-cai-example="${attr(e.text)}" data-cursor="-fusion">${e.title}</button>`).join('\n              ')}
+            </div>
+            <div class="cai__submit-row">
+              <button class="btn btn--solid" type="button" data-cai-submit data-cursor="-fusion">
+                <span class="btn__list"><span class="btn__text" data-cai-submit-text>${a.submit}</span><span class="btn__icon">${ICON_CHEVRON}</span></span>
+              </button>
+              <div class="calc__status" role="status" aria-live="polite" data-cai-status></div>
+            </div>
+          </div>
+          <div class="cai__result" data-cai-result>
+            <div class="cai__placeholder">${a.resultTitle} появится здесь</div>
+          </div>
+        </div>
+        <p class="calc__bottom cai__note">${t(a.note)}</p>
+      </div>
+    </section>`;
+}
 
 /* ---------- Страницы ---------- */
 const pages = {};
@@ -496,7 +541,7 @@ pages['about.html'] = {
       <div class="asec__col-img"><div class="asec__img-wrap" data-parallax><img class="asec__img" src="${P.about.block1.photo}" alt="${alt(P.about.block1.photo, P.about.block1.title)}"></div></div>
       <div class="asec__col-txt">
         <h2 class="asec__title">${P.about.block1.title}</h2>
-        <p class="asec__text">${t(P.about.block1.text)}<br><br>${c.directions.items.map((d) => `→ <strong>${d.title}</strong>: ${d.text}`).join('<br><br>')}<br><br>${P.about.block1.extra}</p>
+        <p class="asec__text">${t(P.about.block1.text)}<br><br>${c.directions.items.map((d) => `→ <strong>${d.title}</strong>: ${d.text}`).join('<br><br>')}${P.about.block1.extra ? '<br><br>' + P.about.block1.extra : ''}</p>
         ${btn(P.about.block1.button, P.about.block1.buttonHref)}
       </div>
     </div>
@@ -550,7 +595,7 @@ pages['team.html'] = {
         ${(P.team.storyPhotos || []).map((src) => `<div class="story__img-wrap"><img class="story__img" src="${src}" alt="${alt(src, P.team.storySur)}"></div>`).join('\n        ')}
       </div>
       <div class="story__col-right">
-        <p class="story__text">${t(P.team.storyText)}<br><br>${c.directions.items.map((d) => `<strong>${d.title}.</strong> ${d.text}`).join('<br><br>')}<br><br>${P.team.storyExtra}</p>
+        <p class="story__text">${t(P.team.storyText)}<br><br>${c.directions.items.map((d) => `<strong>${d.title}.</strong> ${d.text}`).join('<br><br>')}${P.team.storyExtra ? '<br><br>' + P.team.storyExtra : ''}</p>
         <div class="story__person">
           <h3 class="story__inter" data-cursor="-fusion">${P.team.processTitle}</h3>
           <p class="story__text">${processList()}<br><br>${t(P.team.processNote)}</p>
@@ -626,7 +671,7 @@ ${directionsBlock({ photo: P.expertise.directionsPhoto })}`,
 pages['calculator.html'] = {
   title: P.calculator.title,
   description: P.calculator.description,
-  scripts: ['assets/js/calc-formulas.js', 'assets/js/calc.js'],
+  scripts: ['assets/js/calc-formulas.js', 'assets/js/calc.js', 'assets/js/calc-ai.js'],
   body: `
 <section class="works-head calc-head">
   <div class="container works-head__inner">
@@ -641,6 +686,7 @@ pages['calculator.html'] = {
 <section class="calc" data-calc data-tg="${attr(S.telegramUrl)}" data-email="${attr(S.email)}" data-brand="${attr(S.brand)}">
   <div class="container">
     <div class="calc__tabs" role="tablist" aria-label="Задача" data-calc-tabs></div>
+    ${calcAi()}
     <div class="calc__grid">
       <div class="calc__params">
         <div class="sec-head__sur">${P.calculator.paramsTitle}</div>
@@ -754,6 +800,68 @@ function legalPage(page) {
 pages['legal.html'] = { title: P.legal.title, description: P.legal.description, body: legalPage(P.legal) };
 pages['privacy.html'] = { title: P.privacy.title, description: P.privacy.description, body: legalPage(P.privacy) };
 
+/* ---------- СЕО ---------- */
+const SITE_URL = String(S.url || '').replace(/\/+$/, '');
+const GEO = S.geo || {};
+const pageUrl = (file) => (SITE_URL ? SITE_URL + '/' + file.replace(/\.html$/, '').replace(/^index$/, '') : '');
+
+// Разметка организации: поисковик понимает, чем занимаемся и где работаем
+function orgSchema() {
+  const data = {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    name: S.brand,
+    description: strip(P.index.description),
+    telephone: S.phone,
+    email: S.email,
+    url: SITE_URL || undefined,
+    image: SITE_URL ? SITE_URL + '/' + c.media.heroPoster : undefined,
+    address: GEO.region ? { '@type': 'PostalAddress', addressCountry: 'RU', addressRegion: GEO.region, addressLocality: GEO.city } : undefined,
+    geo: GEO.lat ? { '@type': 'GeoCoordinates', latitude: GEO.lat, longitude: GEO.lon } : undefined,
+    areaServed: [
+      GEO.region ? { '@type': 'AdministrativeArea', name: GEO.region } : null,
+      ...(GEO.cities || []).map((name) => ({ '@type': 'City', name })),
+    ].filter(Boolean),
+    sameAs: [S.telegramUrl].filter(Boolean),
+    knowsAbout: c.catalog.categories,
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Виды работ',
+      itemListElement: c.catalog.items.slice(0, 12).map((item) => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: strip(item.title), category: catsOf(item)[0] },
+      })),
+    },
+  };
+  return `<script type="application/ld+json">${JSON.stringify(data)}</script>`;
+}
+
+// Заголовок окна: отдельное СЕО-поле страницы, иначе заголовок блока
+const seoTitleFor = (file, p) => strip(((P[file.replace(/.html$/, "")] || {}).seoTitle) || p.title);
+
+function seoHead(file, p) {
+  const url = pageUrl(file);
+  const title = seoTitleFor(file, p) + ' | ' + S.brand;
+  const description = strip(p.description || S.footerNote);
+  const tags = [
+    url ? `<link rel="canonical" href="${url}">` : '',
+    `<meta property="og:type" content="website">`,
+    `<meta property="og:site_name" content="${attr(S.brand)}">`,
+    `<meta property="og:locale" content="ru_RU">`,
+    `<meta property="og:title" content="${attr(title)}">`,
+    `<meta property="og:description" content="${attr(description)}">`,
+    url ? `<meta property="og:url" content="${url}">` : '',
+    SITE_URL ? `<meta property="og:image" content="${SITE_URL}/${c.media.heroPoster}">` : '',
+    `<meta name="twitter:card" content="summary_large_image">`,
+    GEO.region ? `<meta name="geo.region" content="RU-KK">` : '',
+    GEO.city ? `<meta name="geo.placename" content="${attr(GEO.city)}">` : '',
+    GEO.lat ? `<meta name="geo.position" content="${GEO.lat};${GEO.lon}">` : '',
+    GEO.lat ? `<meta name="ICBM" content="${GEO.lat}, ${GEO.lon}">` : '',
+    file === 'index.html' ? orgSchema() : '',
+  ];
+  return tags.filter(Boolean).join('\n');
+}
+
 /* ---------- Сборка ---------- */
 const IMG = path.join(OUT, 'assets/img');
 fs.mkdirSync(IMG, { recursive: true });
@@ -830,9 +938,10 @@ for (const [file, p] of Object.entries(pages)) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>${strip(p.title)} | ${S.brand}</title>
+<title>${seoTitleFor(file, p)} | ${S.brand}</title>
 <meta name="description" content="${attr(strip(p.description || S.footerNote))}">
 <meta name="theme-color" content="#181818">
+${seoHead(file, p)}
 ${FAVICON}
 <script>
   // Анимации появления включаются только при работающем JS; если скрипты не загрузились за 8 секунд — показываем страницу как есть
@@ -846,6 +955,7 @@ ${FAVICON}
 </script>
 <link rel="preload" href="assets/fonts/roboto-cyrillic-1.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/source-serif-4-cyrillic-5.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/source-serif-4-cyrillic-ext-4.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/fonts.css">
 ${head}
 </head>
@@ -871,3 +981,21 @@ ${scripts}
   fs.writeFileSync(path.join(OUT, file), out);
   console.log('built', file);
 }
+
+/* ---------- Файлы для поисковиков ---------- */
+const today = new Date().toISOString().slice(0, 10);
+const urls = Object.keys(pages).map((file) => ({
+  loc: pageUrl(file),
+  priority: file === 'index.html' ? '1.0' : ['works.html', 'prices.html', 'calculator.html'].includes(file) ? '0.8' : '0.6',
+}));
+if (SITE_URL) {
+  fs.writeFileSync(path.join(OUT, 'sitemap.xml'),
+    '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    + urls.map((u) => `  <url><loc>${u.loc}</loc><lastmod>${today}</lastmod><priority>${u.priority}</priority></url>`).join('\n')
+    + '\n</urlset>\n');
+  console.log('built sitemap.xml');
+}
+fs.writeFileSync(path.join(OUT, 'robots.txt'),
+  ['User-agent: *', 'Allow: /', 'Disallow: /admin.html', 'Disallow: /api/', '',
+    SITE_URL ? 'Sitemap: ' + SITE_URL + '/sitemap.xml' : '', ''].filter((l) => l !== undefined).join('\n'));
+console.log('built robots.txt');

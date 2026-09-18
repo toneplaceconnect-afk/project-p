@@ -43,6 +43,8 @@
 .cform__chip:hover, .cform__action:hover:not(:disabled) { background: var(--wheat); border-color: var(--wheat); color: var(--black); }
 .cform__action:disabled { opacity: 0.35; cursor: not-allowed; }
 .cform__action--accent { border-color: var(--wheat); }
+.cform__action--danger { color: #e0674f; border-color: rgba(224, 103, 79, 0.45); }
+.cform__action--danger:not(:disabled):hover { background: rgba(224, 103, 79, 0.12); border-color: #e0674f; }
 
 /* Загрузка фото */
 .cform__thumb-name { font-size: 0.875rem; color: var(--dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 12rem; }

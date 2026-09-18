@@ -26,6 +26,7 @@ const TYPES = {
 };
 const generateSketch = require('./api/generate-sketch');
 const adminApi = require('./api/admin');
+const calcAiApi = require('./api/calc-ai');
 
 function sendJson(res, status, data) {
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
@@ -70,10 +71,10 @@ http.createServer((req, res) => {
     res.writeHead(400);
     return res.end('Bad request');
   }
-  if (urlPath === '/api/generate-sketch' || urlPath === '/api/admin') {
+  const API_ROUTES = { '/api/generate-sketch': generateSketch, '/api/admin': adminApi, '/api/calc-ai': calcAiApi };
+  if (API_ROUTES[urlPath]) {
     if (req.method !== 'POST') return sendJson(res, 405, { error: 'Метод не поддерживается.' });
-    const admin = urlPath === '/api/admin';
-    return handleApi(req, res, admin ? adminApi : generateSketch, admin ? MAX_BODY_ADMIN : MAX_BODY);
+    return handleApi(req, res, API_ROUTES[urlPath], urlPath === '/api/admin' ? MAX_BODY_ADMIN : MAX_BODY);
   }
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     res.writeHead(405);
