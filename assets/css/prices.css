@@ -1,0 +1,60 @@
+/* =========================================================
+   Страница «Цены»
+   ========================================================= */
+.prices-head { padding-bottom: calc(3rem * var(--sc)); }
+.prices { padding-top: 0; }
+.prices__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: calc(5rem * var(--sc)); align-items: start; }
+@media (min-width: 992px) {
+  .prices__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: calc(3rem * var(--sc)); }
+  .prices__table { grid-column: span 7; }
+  .prices__cta { grid-column: 9 / span 4; position: sticky; top: 6rem; }
+}
+
+/* Таблица */
+.prices__table { display: flex; flex-direction: column; }
+.prices__row {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 1rem 2rem;
+  padding: 1.2rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.prices__row--head { padding: 0 0 0.9rem; color: var(--wheat); font-size: 0.875rem; }
+.prices__row--head > div:last-child { text-align: right; }
+.prices__work {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0.35rem;
+  font-family: var(--ff-serif); font-weight: 300; font-size: 1.5rem; line-height: 1.15; letter-spacing: -0.03em;
+}
+.prices__calc {
+  font: 400 0.875rem/1.3 var(--ff-sans); letter-spacing: 0; color: var(--dim);
+  text-decoration: none; transition: color 0.2s;
+}
+.prices__calc:hover { color: var(--wheat); }
+.prices__value { color: var(--dim); font-size: 1rem; text-align: right; white-space: nowrap; }
+.prices__row--special .prices__work { color: var(--wheat); }
+.prices__row--special .prices__value {
+  color: var(--black); background: var(--wheat); border-radius: 100vw;
+  padding: 0.45rem 0.9rem; font-size: 0.875rem; line-height: 1;
+}
+.prices__row:hover .prices__work { color: var(--wheat); }
+
+/* Боковой блок */
+.prices__cta {
+  display: flex; flex-direction: column; gap: calc(2rem * var(--sc));
+  padding: calc(3rem * var(--sc)); border-radius: var(--radius);
+  background: var(--black-light); border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.prices__cta-title { font-size: 2.5rem; }
+.prices__cta-text { color: var(--wheat); }
+.prices__cta-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.prices__cta-actions .btn-link { display: inline-block; }
+.prices__facts { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.prices__facts li { padding: 0.7rem 0 0.7rem 1.6rem; position: relative; border-top: 1px solid rgba(255, 255, 255, 0.12); font-size: 0.875rem; color: var(--dim); }
+.prices__facts li::before { content: ""; position: absolute; left: 0; top: 1.05rem; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--wheat); }
+
+@media (max-width: 479px) {
+  .prices__row { grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+  .prices__row--head > div:last-child { display: none; }
+  .prices__value { text-align: left; }
+  .prices__row--special .prices__value { justify-self: start; }
+  .prices__work { font-size: 1.35rem; }
+  .prices__cta { padding: 1.25rem; }
+  .prices__cta-title { font-size: 2rem; }
+}
