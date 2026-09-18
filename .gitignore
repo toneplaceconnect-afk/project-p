@@ -6,3 +6,5 @@ node_modules/
 
 # Исходник видео: на сайте используется сжатая копия assets/video/hero.mp4
 assets/htad/
+
+.vercel

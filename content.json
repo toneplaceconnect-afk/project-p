@@ -42,7 +42,9 @@
       "assets/photo/skami-veshala.jpg": "Скамьи и вешала",
       "assets/photo/otoplenie.jpg": "Монтаж отопления",
       "assets/photo/vodosnabzhenie.jpg": "Монтаж водоснабжения",
-      "assets/photo/stoly-stol.jpg": "Стол из массива на металлической раме"
+      "assets/photo/stoly-stol.jpg": "Стол из массива на металлической раме",
+      "assets/photo/krovat.png": "Кровать из металла",
+      "assets/photo/krovat2.png": "Металлическая кровать"
     }
   },
   "nav": [
@@ -74,9 +76,9 @@
     "categoriesTitle": "Виды работ",
     "lastTitle": "Последний проект",
     "lastProject": {
-      "title": "Обеденный стол лофт",
-      "href": "work.html",
-      "photo": "assets/photo/stol-obedenny.jpg"
+      "title": "Кровать из металла",
+      "href": "works.html",
+      "photo": "assets/photo/krovat2.png"
     }
   },
   "catalog": {
@@ -180,6 +182,13 @@
         "cat": "Водоснабжение",
         "photo": "assets/photo/vodosnabzhenie.jpg",
         "text": "Скважина или центральный ввод, разводка по точкам, фильтрация.",
+        "href": "#contact"
+      },
+      {
+        "title": "Кровать из металла",
+        "cat": "Изделия из металла",
+        "photo": "assets/photo/krovat.png",
+        "text": "Кровати из металла на заказ. Порошковая окраска.",
         "href": "#contact"
       }
     ],
