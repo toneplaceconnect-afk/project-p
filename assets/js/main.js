@@ -44,6 +44,24 @@
     });
   });
 
+  /* Якоря вида page.html#id на текущей странице: плавный скролл без хэша в адресе */
+  $$('a[href*="#"]').forEach((a) => {
+    const href = a.getAttribute('href');
+    if (!href || href.startsWith('#')) return;
+    const parts = href.split('#');
+    if (parts.length < 2 || !parts[1]) return;
+    const strip = (p) => p.replace(/\.html$/, '');
+    const hereFile = location.pathname.split('/').pop() || 'index.html';
+    if (strip(parts[0] || 'index.html') !== strip(hereFile)) return;
+    a.addEventListener('click', (e) => {
+      const target = document.getElementById(parts[1]);
+      if (!target) return;
+      e.preventDefault();
+      lenis.scrollTo(target, { offset: 0, duration: 2, easing: (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2) });
+      history.replaceState(null, '', location.pathname + location.search);
+    });
+  });
+
   /* ---------- Скрытие шапки при скролле вниз ---------- */
   const topbar = $('#topbar');
   let lastDir = 0;

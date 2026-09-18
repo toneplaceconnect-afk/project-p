@@ -67,6 +67,10 @@
     {
       "href": "prices.html",
       "label": "Цены"
+    },
+    {
+      "href": "index.html#create",
+      "label": "Создай своё"
     }
   ],
   "dropdown": {

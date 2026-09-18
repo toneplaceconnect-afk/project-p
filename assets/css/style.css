@@ -158,6 +158,13 @@ html.js [data-fade-up] { visibility: hidden; }
 .topbar__works { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
 .nav-links { display: flex; justify-content: center; width: 100%; }
 .nav-links__inner { display: flex; column-gap: calc(2rem * var(--sc)); }
+.nav-links__inner .link-u { white-space: nowrap; flex-shrink: 0; }
+.topbar__inner { position: relative; }
+@media (min-width: 992px) {
+  .topbar__right .nav-links { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+  .topbar__right { justify-content: flex-end; }
+  .nav-links__inner .topbar__works { width: auto; }
+}
 .topbar__menu { display: flex; justify-content: flex-end; gap: 0.25rem; }
 
 .hamburger-wrap { display: flex; align-items: center; justify-content: center; width: calc(30px + 2rem); cursor: pointer; }

@@ -59,10 +59,11 @@ function topbar(current) {
     <div class="topbar__inner">
       <div class="topbar__left">
         <a class="brand" href="index.html" aria-label="${attr(S.brand)} — на главную" title="${attr(S.brand)}" data-top-item data-cursor="-fusion">${LOGO_SMALL}</a>
-        <a class="topbar__works" href="works.html" data-open-dropdown aria-controls="dropdown-works" data-cursor="-hidden"><p class="link-u" data-top-item>Каталог •</p></a>
+        
       </div>
       <div class="topbar__right">
         <div class="nav-links"><div class="nav-links__inner">
+          <a class="topbar__works" href="works.html" data-open-dropdown aria-controls="dropdown-works" data-cursor="-hidden"><p class="link-u" data-top-item>Каталог •</p></a>
           ${c.nav.map((n) => `<a class="link-u${current === n.href ? ' is-current' : ''}" href="${n.href}" data-top-item data-cursor="-hidden">${n.label}</a>`).join('\n          ')}
         </div></div>
         <div class="topbar__menu" data-top-item>
