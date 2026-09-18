@@ -62,13 +62,16 @@ async function analyzeBrief(brief, accountId, token) {
         { role: 'user', content: `CLIENT BRIEF:\n${brief}` },
       ],
       temperature: 0.1,
-      max_tokens: 900,
+      max_tokens: 2500,
     }),
   });
   if (!r.ok) throw new Error(`analysis HTTP ${r.status}`);
   const d = await r.json();
-  const text = d?.result?.response || d?.result?.choices?.[0]?.message?.content || d?.choices?.[0]?.message?.content;
-  if (!text) throw new Error('analysis returned no specification');
+  const text = d?.result?.response || d?.result?.text || d?.result?.choices?.[0]?.message?.content || d?.choices?.[0]?.message?.content;
+  if (!text) {
+    console.warn('analysis empty, result keys:', Object.keys(d?.result || {}));
+    throw new Error('analysis returned no specification');
+  }
   // Модель может вернуть блок рассуждений — убираем его
   return String(text).replace(/<think>[\s\S]*?<\/think>/g, '').trim();
 }
