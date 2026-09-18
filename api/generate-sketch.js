@@ -77,7 +77,7 @@ async function generateImage(prompt, accountId, token) {
   const r = await fetch(cfUrl(accountId, '@cf/black-forest-labs/flux-1-schnell'), {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt, steps: 4, guidance: 6, width: 1024, height: 768 }),
+    body: JSON.stringify({ prompt, steps: 4 }),
   });
   if (!r.ok) {
     const details = await r.text().catch(() => '');
