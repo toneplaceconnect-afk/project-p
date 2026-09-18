@@ -81,18 +81,12 @@ async function analyzeBrief(brief, accountId, token) {
 }
 
 async function generateImage(prompt, refs, accountId, token) {
-  const form = new FormData();
-  form.append('prompt', prompt);
-  form.append('steps', '4');
-  form.append('guidance', '6');
-  form.append('width', '1024');
-  form.append('height', '768');
-  refs.forEach((dataUrl, i) => form.append(`input_image_${i}`, dataUrlToBlob(dataUrl, i), `reference-${i + 1}.png`));
-
+  // FLUX.1 schnell — только текст (без референсных фото), запрос строго JSON.
+  void refs;
   const r = await fetch(cfUrl(accountId, '@cf/black-forest-labs/flux-1-schnell'), {
     method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body: form,
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt, steps: 4, guidance: 6, width: 1024, height: 768 }),
   });
   if (!r.ok) {
     const details = await r.text().catch(() => '');
