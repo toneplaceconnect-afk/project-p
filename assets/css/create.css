@@ -45,25 +45,6 @@
 .cform__action--accent { border-color: var(--wheat); }
 
 /* Загрузка фото */
-.cform__drop {
-  position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.4rem; text-align: center;
-  padding: calc(2rem * var(--sc)) 1rem; cursor: pointer;
-  border: 1px dashed rgba(246, 232, 191, 0.35); border-radius: var(--radius);
-  transition: background-color 0.3s, border-color 0.3s, opacity 0.3s;
-}
-.cform__drop:hover, .cform__drop.is-over { background: rgba(246, 232, 191, 0.06); border-color: var(--wheat); }
-.cform__drop.is-full { opacity: 0.5; pointer-events: none; }
-.cform__file { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
-.cform__drop-title { font-family: var(--ff-serif); font-weight: 300; font-size: 1.5rem; line-height: 1.1; letter-spacing: -0.03em; }
-.cform__drop-text { font-size: 0.875rem; color: var(--dim); max-width: 30rem; }
-.cform__thumbs { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-.cform__thumbs:empty { display: none; }
-.cform__thumb {
-  position: relative; display: flex; align-items: center; gap: 0.6rem; max-width: 100%;
-  padding: 0.4rem 2.2rem 0.4rem 0.4rem;
-  background: var(--black-light); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius);
-}
-.cform__thumb img { width: 3rem; height: 3rem; object-fit: cover; border-radius: 3px; }
 .cform__thumb-name { font-size: 0.875rem; color: var(--dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 12rem; }
 .cform__thumb-remove {
   position: absolute; top: 50%; right: 0.5rem; transform: translateY(-50%);

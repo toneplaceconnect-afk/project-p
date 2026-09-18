@@ -192,6 +192,10 @@ const actions = {
   },
 
   async save({ content }) {
+    // На хостинге файловая система временная: без ключей GitHub правки пропадут при следующей сборке
+    if (process.env.VERCEL && !gh.available) {
+      throw new PublicError('Сохранение на сайте не настроено: добавьте GITHUB_TOKEN и GITHUB_REPO в переменные окружения Vercel, иначе правки пропадут.', 503);
+    }
     const text = validate(content);
     const pretty = JSON.stringify(JSON.parse(text), null, 2) + '\n';
     await store().write(CONTENT, Buffer.from(pretty, 'utf8'), 'Админка: обновление контента');
@@ -206,6 +210,9 @@ const actions = {
   },
 
   async upload({ file, data }) {
+    if (process.env.VERCEL && !gh.available) {
+      throw new PublicError('Загрузка файлов на сайте не настроена: добавьте GITHUB_TOKEN и GITHUB_REPO в переменные окружения Vercel.', 503);
+    }
     const target = safeMediaPath(file);
     const base64 = String(data || '').replace(/^data:[^;]+;base64,/, '');
     const buffer = Buffer.from(base64, 'base64');

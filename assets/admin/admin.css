@@ -131,3 +131,15 @@ input, textarea, select, button { font: inherit; color: inherit; }
   .side__btn { white-space: nowrap; }
   .main { padding: 18px 16px 70px; }
 }
+
+/* Подсказка после загрузки фото: куда поставить позицию */
+.suggest-box { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+.suggest { display: flex; gap: 14px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: rgba(246, 232, 191, .05); }
+.suggest__img { width: 120px; height: 80px; object-fit: cover; border-radius: 8px; flex: none; background: #111; }
+.suggest__body { display: flex; flex-direction: column; gap: 8px; min-width: 0; flex: 1; }
+.suggest__file { font-size: 12px; color: var(--grey); word-break: break-all; }
+.suggest__cats { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; }
+.suggest__cat { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+.suggest__hint { font-size: 12px; color: var(--grey); }
+.suggest__actions { display: flex; gap: 8px; }
+@media (max-width: 860px) { .suggest { flex-direction: column; } .suggest__img { width: 100%; height: 140px; } }

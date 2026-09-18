@@ -490,13 +490,15 @@
     const more = $('.js-load-more');
     const pagination = $('.works__pagination');
     let expanded = false;
+    const visible = Number(list.dataset.visible) || 10;
 
     const apply = () => {
       const active = boxes.filter((b) => b.checked).map((b) => b.value);
       items.forEach((it, i) => {
-        const matches = !active.length || active.includes(it.dataset.cat);
+        const cats = (it.dataset.cats || it.dataset.cat || '').split('|');
+        const matches = !active.length || cats.some((c) => active.includes(c));
         it.classList.toggle('is-filtered', !matches);
-        it.classList.toggle('is-hidden-more', !active.length && !expanded && i >= 10);
+        it.classList.toggle('is-hidden-more', !active.length && !expanded && i >= visible);
       });
       pagination.classList.toggle('is-done', expanded || active.length > 0);
       ScrollTrigger.refresh();

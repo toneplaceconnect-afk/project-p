@@ -20,6 +20,8 @@ function t(text = '') {
 const attr = (v = '') => String(v).replace(/"/g, '&quot;');
 // Подпись к фото (alt): из media.alts, иначе из заголовка блока
 const alt = (src, fallback = '') => attr((c.media.alts || {})[src] || strip(fallback));
+// Разделы позиции: новый формат — список cats, старый — одиночный cat
+const catsOf = (x) => (Array.isArray(x.cats) && x.cats.length ? x.cats : [x.cat]).filter(Boolean);
 const strip = (v = '') => String(v).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 
 /* ---------- Иконки и логотип ---------- */
@@ -229,7 +231,7 @@ function worksSlider({ transparent = false, anime = false, offset = 0 } = {}) {
           <div class="swiper slist">
             <div class="swiper-wrapper">
               ${items.map((w) => `<div class="swiper-slide slist__slide" data-cursor="-fusion">
-                <div class="slist__cats"><div class="slist__cat">${w.cat}</div></div>
+                <div class="slist__cats"><div class="slist__cat">${catsOf(w)[0] || ''}</div></div>
                 <a class="slist__title-link clickable-parent" href="${w.href || 'works.html'}"><h3 class="slist__title">${w.title}</h3></a>
                 <div class="slist__intro">${w.intro}</div>
               </div>`).join('\n              ')}
@@ -404,12 +406,12 @@ pages['works.html'] = {
 </section>
 <section class="works">
   <div class="works__contain">
-    <div class="works__list">
+    <div class="works__list" data-visible="${P.works.visibleCount || 10}">
       ${c.catalog.items.map((w, i) => {
         const more = c.catalog.galleryPool.filter((p) => p !== w.photo);
         const pick = w.gallery && w.gallery.length ? w.gallery : [0, 1, 2, 3, 4].map((k) => more[(i * 2 + k) % more.length]);
         const href = w.href || '#contact';
-        return `<div class="works__wrap${i >= (P.works.visibleCount || 10) ? ' is-hidden-more' : ''}" data-cat="${attr(w.cat)}">
+        return `<div class="works__wrap${i >= (P.works.visibleCount || 10) ? ' is-hidden-more' : ''}" data-cats="${attr(catsOf(w).join('|'))}">
         <div class="works__item">
           <div class="works__txt"><a class="works__link clickable-parent" href="${href}" data-cursor-text="${href.startsWith('#') ? 'Заказать' : 'Смотреть'}"><h2 class="works__title">${w.title}</h2><div class="works__desc">${w.text}</div></a></div>
           <div class="works__gallery">

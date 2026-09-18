@@ -27,17 +27,30 @@ CONSTRUCTION: ...
 ENVIRONMENT: ...
 STYLE: ...`;
 
-const IMAGE_PROMPT_PREFIX = `Create ONE photorealistic commercial product photograph of the exact object described below.
+// Лимит промпта у FLUX.1 schnell — 2048 символов. Постоянную часть держим короткой,
+// чтобы описание изделия (главное) и слова заказчика влезали целиком.
+const PROMPT_LIMIT = 2000;
+const IMAGE_STYLE = `Photorealistic commercial product photograph. Show the whole object in a three-quarter view, correct scale and proportions, welded joints and load-bearing structure, natural wood grain and metal finish, believable light, shadows and reflections, clean premium setting, moderate depth of field. Keep the object exactly as described: do not swap it for another product and do not invent extra parts. No text, labels, dimensions, arrows, logos, blueprints, CAD, collage, split screen or inset views. ONE object, ONE photograph.`;
 
-OBJECT IDENTITY IS HARD: the object named after OBJECT: must remain exactly that object. Do not substitute a different product, machine, enclosure, sculpture, abstract form or generic object.
-
-Preserve every explicit requirement. The visible silhouette, function, major components and proportions have priority. All specified materials, wood species, grain direction, metal color, coatings, fasteners and construction details must be visibly plausible. Use physically realistic scale, welded joints and load-bearing structure.
-
-Show the whole object clearly in a professional three-quarter product view. Real camera optics, realistic perspective, natural material texture, believable reflections and shadows, high exposure, clean premium environment, shallow-to-moderate depth of field. The environment must remain secondary to the object.
-
-NO text, labels, dimensions, arrows, logos, UI, diagrams, blueprints, CAD, wireframes, collage, split screen or inset views. ONE object, ONE photograph.
-
-FINAL CHECK before rendering: object identity, silhouette, function, explicit materials, major components and construction must all match the specification.`;
+// Собираем промпт по бюджету символов: сначала объект, затем стиль, и только потом — остаток описания
+function buildImagePrompt(spec, brief, analyzed) {
+  const head = 'Product to photograph:';
+  const body = String(analyzed ? spec : brief).trim();
+  const tail = analyzed ? '' : '\n\nThe description above is in Russian: follow its meaning literally.';
+  const room = PROMPT_LIMIT - head.length - IMAGE_STYLE.length - tail.length - 8;
+  let text = body;
+  if (text.length > room) {
+    // режем по строкам: OBJECT, FUNCTION и FORM важнее хвоста спецификации
+    const lines = text.split('\n');
+    text = '';
+    for (const line of lines) {
+      if ((text + line).length + 1 > room) break;
+      text += (text ? '\n' : '') + line;
+    }
+    if (!text) text = body.slice(0, room);
+  }
+  return [head, text, IMAGE_STYLE].join('\n\n') + tail;
+}
 
 const MAX_PROMPT = 3000;
 
@@ -112,14 +125,17 @@ async function generateSketch(body) {
   try {
     spec = await analyzeBrief(brief, accountId, token);
     analyzed = true;
-  } catch (e) {
-    // Без повторного запроса: исходное описание — безопасный запасной вариант
-    console.warn('Анализ описания недоступен, используется исходный текст:', e?.message || e);
+  } catch (first) {
+    // Одна повторная попытка: модель-рассуждатель иногда отдаёт пустой ответ
+    try {
+      spec = await analyzeBrief(brief, accountId, token);
+      analyzed = true;
+    } catch (e) {
+      console.warn('Анализ описания недоступен, используется исходный текст:', e?.message || e, '| первая попытка:', first?.message || first);
+    }
   }
 
-  let prompt = [IMAGE_PROMPT_PREFIX, 'VISUAL DESIGN SPECIFICATION:', spec, 'ORIGINAL CLIENT BRIEF — FINAL AUTHORITY:', brief].join('\n\n');
-  // Лимит schnell: prompt не длиннее 2048 символов — режем хвост, голова (OBJECT) важнее
-  if (prompt.length > 2000) prompt = prompt.slice(0, 2000);
+  const prompt = buildImagePrompt(spec, brief, analyzed);
   const image = await generateImage(prompt, accountId, token);
   return { images: [image], count: 1, analyzed };
 }

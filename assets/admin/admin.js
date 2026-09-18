@@ -18,6 +18,7 @@
     { key: 'nav', title: 'Меню сайта', hint: 'Пункты верхнего меню. Ссылка — имя файла страницы.' },
     { key: 'dropdown', title: 'Выпадающее меню «Каталог»', hint: 'Появляется при наведении на «Каталог» в шапке.' },
     { key: 'catalog', title: 'Каталог работ', hint: 'Категории для фильтра, карточки работ и фото для галерей.' },
+    { key: 'taxonomy', title: 'Разбор фото по разделам', hint: 'По этим словам админка угадывает раздел загруженного фото. Слово ищется как часть имени файла, можно писать по-русски и латиницей.' },
     { key: 'slider', title: 'Блок «Варианты изделий»', hint: 'Слайдер, который повторяется на нескольких страницах.' },
     { key: 'directions', title: 'Блок «Направления работ»', hint: 'Блок с фото и списком направлений.' },
     { key: 'create', title: 'Блок «Создай своё»', hint: 'Форма визуализации: шаги, примеры и подписи.' },
@@ -46,7 +47,9 @@
     href: 'Ссылка', label: 'Надпись', title: 'Заголовок', text: 'Текст', lead: 'Вводная фраза',
     intro: 'Вступление', sur: 'Надзаголовок', button: 'Надпись на кнопке', buttonHref: 'Куда ведёт кнопка',
     photo: 'Фото', gallery: 'Галерея', cat: 'Категория', categories: 'Категории фильтра',
-    items: 'Позиции', slides: 'Слайды',
+    items: 'Позиции', cats: 'Разделы каталога', taxonomy: 'Правила разбора фото по разделам',
+    outdoor: 'Слова-признаки улицы', rules: 'Правила', words: 'Слова в имени файла',
+    outdoorCat: 'Раздел, если это для улицы', newItemText: 'Описание по умолчанию у новой позиции', note: 'Пояснение', slides: 'Слайды',
     galleryPool: 'Фото для маленьких галерей', categoriesTitle: 'Заголовок списка категорий',
     lastTitle: 'Заголовок «Последний проект»', lastProject: 'Последний проект',
     steps: 'Шаги', examples: 'Примеры описаний', fieldLabel: 'Подпись поля ввода',
@@ -126,6 +129,56 @@
     if (key.indexOf('assets/') === 0) return key.split('/').pop();
     return LABELS[key] || key;
   };
+
+
+  /* ---------- Разбор имени файла: раздел каталога по названию ---------- */
+  // Русские имена файлов переводим в латиницу: сервер принимает только латинские имена
+  var TRANSLIT = { а:'a',б:'b',в:'v',г:'g',д:'d',е:'e',ё:'e',ж:'zh',з:'z',и:'i',й:'j',к:'k',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'s',т:'t',у:'u',ф:'f',х:'h',ц:'c',ч:'ch',ш:'sh',щ:'sch',ъ:'',ы:'y',ь:'',э:'e',ю:'yu',я:'ya' };
+  function translit(text) {
+    return String(text).toLowerCase().split('').map(function (ch) {
+      return Object.prototype.hasOwnProperty.call(TRANSLIT, ch) ? TRANSLIT[ch] : ch;
+    }).join('');
+  }
+  function safeFileName(name) {
+    var dot = name.lastIndexOf('.');
+    var base = dot > 0 ? name.slice(0, dot) : name;
+    var ext = dot > 0 ? name.slice(dot).toLowerCase() : '';
+    var clean = translit(base).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    return (clean || 'file-' + Date.now()) + ext;
+  }
+  // По имени файла ищем правило из content.taxonomy: «кровать» → «Мебель», «уличный стол» → «Уличная мебель»
+  function detectCats(fileName) {
+    var tax = (content && content.taxonomy) || {};
+    var rules = tax.rules || [];
+    if (!rules.length) return null;
+    var dot = fileName.lastIndexOf('.');
+    var base = (dot > 0 ? fileName.slice(0, dot) : fileName).toLowerCase();
+    var hay = base + ' ' + translit(base);
+    var outdoor = (tax.outdoor || []).some(function (w) { return hay.indexOf(w) >= 0; });
+    for (var i = 0; i < rules.length; i++) {
+      var rule = rules[i];
+      var hit = (rule.words || []).some(function (w) { return hay.indexOf(String(w).toLowerCase()) >= 0; });
+      if (!hit) continue;
+      var cats = (rule.cats || []).slice();
+      if (outdoor && rule.outdoorCat) cats = [rule.outdoorCat];
+      return { title: rule.title, cats: cats, outdoor: outdoor };
+    }
+    return null;
+  }
+  // Новая позиция каталога из загруженного файла
+  function addCatalogItem(path, title, cats) {
+    var cat = content.catalog;
+    cats.forEach(function (k) { if (cat.categories.indexOf(k) < 0) cat.categories.push(k); });
+    cat.items.push({
+      title: title,
+      cats: cats.slice(),
+      photo: path,
+      text: (content.taxonomy && content.taxonomy.newItemText) || '',
+      href: '#contact',
+    });
+    if (cat.galleryPool.indexOf(path) < 0) cat.galleryPool.push(path);
+    markDirty();
+  }
 
   /* ---------- Построение полей ---------- */
   function el(tag, cls, text) {
@@ -388,6 +441,8 @@
   function closePicker() {
     $('#picker').hidden = true;
     pickerCb = null;
+    var box = $('#picker-suggest');
+    if (box) { box.innerHTML = ''; box.hidden = true; }
   }
 
   function loadMedia(kind) {
@@ -438,14 +493,16 @@
     if (!list.length) return;
     var grid = $('#picker-grid');
     grid.textContent = 'Загрузка файлов…';
+    var uploaded = [];
     list.reduce(function (chain, file) {
       return chain.then(function () {
         return new Promise(function (resolve, reject) {
           var reader = new FileReader();
           reader.onload = function () {
-            var dir = /\.mp4$/i.test(file.name) ? 'assets/video' : (/\.svg$/i.test(file.name) ? 'assets/img' : 'assets/photo');
-            var name = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-').replace(/^-+|-+$/g, '');
-            api('upload', { file: dir + '/' + name, data: reader.result }).then(resolve, reject);
+            var name = safeFileName(file.name);
+            var dir = /\.mp4$/i.test(name) ? 'assets/video' : (/\.svg$/i.test(name) ? 'assets/img' : 'assets/photo');
+            api('upload', { file: dir + '/' + name, data: reader.result })
+              .then(function (r) { uploaded.push({ path: r.path, original: file.name }); resolve(); }, reject);
           };
           reader.onerror = function () { reject(new Error('Не удалось прочитать файл.')); };
           reader.readAsDataURL(file);
@@ -453,8 +510,82 @@
       });
     }, Promise.resolve()).then(function () {
       loadMedia('any');
+      suggestCatalog(uploaded);
     }).catch(function (e) {
       grid.textContent = e.message;
+    });
+  }
+
+  // После загрузки фото предлагаем сразу поставить его в нужный раздел каталога
+  function suggestCatalog(uploaded) {
+    var box = $('#picker-suggest');
+    box.innerHTML = '';
+    var photos = uploaded.filter(function (f) { return /^assets\/photo\//.test(f.path); });
+    if (!photos.length) { box.hidden = true; return; }
+    box.hidden = false;
+    photos.forEach(function (file) {
+      var guess = detectCats(file.original) || detectCats(file.path.split('/').pop());
+      var row = el('div', 'suggest');
+      var img = document.createElement('img');
+      img.className = 'suggest__img';
+      img.src = file.path;
+      img.alt = '';
+      row.appendChild(img);
+
+      var body = el('div', 'suggest__body');
+      body.appendChild(el('div', 'suggest__file', file.original));
+
+      var nameInput = el('input', 'field__input suggest__name');
+      nameInput.value = guess ? guess.title : file.original.replace(/\.[^.]+$/, '');
+      body.appendChild(nameInput);
+
+      var catsBox = el('div', 'suggest__cats');
+      var chosen = guess ? guess.cats.slice() : [];
+      var all = content.catalog.categories.slice();
+      chosen.forEach(function (k) { if (all.indexOf(k) < 0) all.push(k); });
+      all.forEach(function (k) {
+        var lab = el('label', 'suggest__cat');
+        var box2 = document.createElement('input');
+        box2.type = 'checkbox';
+        box2.checked = chosen.indexOf(k) >= 0;
+        box2.addEventListener('change', function () {
+          var at = chosen.indexOf(k);
+          if (box2.checked && at < 0) chosen.push(k);
+          if (!box2.checked && at >= 0) chosen.splice(at, 1);
+        });
+        lab.appendChild(box2);
+        lab.appendChild(document.createTextNode(' ' + k));
+        catsBox.appendChild(lab);
+      });
+      body.appendChild(catsBox);
+
+      var hint = el('div', 'suggest__hint', guess
+        ? ('Похоже на «' + guess.title + '»' + (guess.outdoor ? ' для улицы' : '') + ' — раздел выбран автоматически, можно поправить.')
+        : 'Раздел по имени файла не определился — отметьте нужный.');
+      body.appendChild(hint);
+
+      var actions = el('div', 'suggest__actions');
+      var add = el('button', 'btn btn--main btn--mini', 'Добавить в каталог');
+      add.type = 'button';
+      add.addEventListener('click', function () {
+        if (!chosen.length) { hint.textContent = 'Отметьте хотя бы один раздел.'; return; }
+        addCatalogItem(file.path, nameInput.value.trim() || 'Новое изделие', chosen);
+        row.remove();
+        if (!box.children.length) box.hidden = true;
+        status('Позиция добавлена в каталог — проверьте описание и нажмите «Сохранить».');
+      });
+      var skip = el('button', 'btn btn--mini', 'Только файл');
+      skip.type = 'button';
+      skip.addEventListener('click', function () {
+        row.remove();
+        if (!box.children.length) box.hidden = true;
+      });
+      actions.appendChild(add);
+      actions.appendChild(skip);
+      body.appendChild(actions);
+
+      row.appendChild(body);
+      box.appendChild(row);
     });
   }
 
