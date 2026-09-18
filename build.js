@@ -314,12 +314,6 @@ function createBlock({ anime = false } = {}) {
             <span class="cform__examples-label">Примеры:</span>
             ${cr.examples.map((e) => `<button class="cform__chip" type="button" data-example="${attr(e.text)}" data-cursor="-fusion">${e.title}</button>`).join('\n            ')}
           </div>
-          <label class="cform__drop" data-create-drop data-cursor="-fusion">
-            <input class="cform__file" type="file" accept="image/*" multiple data-create-files>
-            <span class="cform__drop-title">${cr.dropTitle}</span>
-            <span class="cform__drop-text">${cr.dropText}</span>
-          </label>
-          <div class="cform__thumbs" data-create-thumbs></div>
           <div class="cform__submit-row">
             <button class="btn btn--solid cform__submit" type="submit" data-create-submit data-cursor="-fusion">
               <span class="btn__list"><span class="btn__text" data-create-submit-text>${cr.submit}</span><span class="btn__icon">${ICON_CHEVRON}</span></span>

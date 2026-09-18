@@ -6,15 +6,10 @@
   if (!form) return;
 
   const API = '/api/generate-sketch';
-  const MAX_FILES = 2;
-  const MAX_SIDE = 512;
   const q = (s) => form.querySelector(s);
 
   const textarea = q('#create-description');
   const counter = q('[data-create-count]');
-  const drop = q('[data-create-drop]');
-  const fileInput = q('[data-create-files]');
-  const thumbs = q('[data-create-thumbs]');
   const submit = q('[data-create-submit]');
   const submitText = q('[data-create-submit-text]');
   const status = q('[data-create-status]');
@@ -24,7 +19,6 @@
   const tgUrl = form.dataset.tg;
   const brand = form.dataset.brand || '';
 
-  let refs = []; // [{ name, dataUrl }]
   let image = '';
   let busy = false;
 
@@ -62,74 +56,6 @@
     });
   });
 
-  /* ---------- Фото ---------- */
-  function fileToDataUrl(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const img = new Image();
-        img.onload = () => {
-          const scale = Math.min(1, MAX_SIDE / img.width, MAX_SIDE / img.height);
-          const w = Math.max(1, Math.round(img.width * scale));
-          const h = Math.max(1, Math.round(img.height * scale));
-          const canvas = document.createElement('canvas');
-          canvas.width = w;
-          canvas.height = h;
-          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-          resolve(canvas.toDataURL('image/jpeg', 0.82));
-        };
-        img.onerror = () => reject(new Error('Не удалось прочитать изображение.'));
-        img.src = reader.result;
-      };
-      reader.onerror = () => reject(new Error('Не удалось прочитать файл.'));
-      reader.readAsDataURL(file);
-    });
-  }
-
-  function renderThumbs() {
-    thumbs.innerHTML = '';
-    refs.forEach((ref, i) => {
-      const item = document.createElement('div');
-      item.className = 'cform__thumb';
-      item.innerHTML = `<img src="${ref.dataUrl}" alt=""><span class="cform__thumb-name"></span><button type="button" class="cform__thumb-remove" aria-label="Убрать фото">×</button>`;
-      item.querySelector('.cform__thumb-name').textContent = ref.name;
-      item.querySelector('button').addEventListener('click', () => {
-        refs.splice(i, 1);
-        renderThumbs();
-      });
-      thumbs.appendChild(item);
-    });
-    drop.classList.toggle('is-full', refs.length >= MAX_FILES);
-  }
-
-  async function addFiles(fileList) {
-    const files = Array.from(fileList).filter((f) => f.type.startsWith('image/'));
-    if (!files.length) return setStatus('Можно добавить только изображения.', 'error');
-    const free = MAX_FILES - refs.length;
-    if (free <= 0) return setStatus(`Можно приложить не больше ${MAX_FILES} изображений.`, 'error');
-    try {
-      for (const f of files.slice(0, free)) refs.push({ name: f.name, dataUrl: await fileToDataUrl(f) });
-      renderThumbs();
-      setStatus(files.length > free ? `Добавлено ${free} из ${files.length}: максимум ${MAX_FILES} изображения.` : '');
-    } catch (e) {
-      setStatus(e.message, 'error');
-    }
-  }
-
-  fileInput.addEventListener('change', () => {
-    addFiles(fileInput.files);
-    fileInput.value = '';
-  });
-  ['dragenter', 'dragover'].forEach((ev) => drop.addEventListener(ev, (e) => {
-    e.preventDefault();
-    drop.classList.add('is-over');
-  }));
-  ['dragleave', 'drop'].forEach((ev) => drop.addEventListener(ev, (e) => {
-    e.preventDefault();
-    drop.classList.remove('is-over');
-  }));
-  drop.addEventListener('drop', (e) => addFiles(e.dataTransfer.files));
-
   /* ---------- Генерация ---------- */
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -151,7 +77,7 @@
       const res = await fetch(API, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt, count: 1, referenceImages: refs.map((r) => r.dataUrl) }),
+        body: JSON.stringify({ prompt, count: 1 }),
       });
       let data = {};
       try { data = await res.json(); } catch (_) { /* ответ не JSON */ }

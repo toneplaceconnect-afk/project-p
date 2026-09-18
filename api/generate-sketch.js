@@ -40,19 +40,12 @@ NO text, labels, dimensions, arrows, logos, UI, diagrams, blueprints, CAD, wiref
 FINAL CHECK before rendering: object identity, silhouette, function, explicit materials, major components and construction must all match the specification.`;
 
 const MAX_PROMPT = 3000;
-const MAX_REFS = 2;
 
 class PublicError extends Error {
   constructor(message, status = 500) {
     super(message);
     this.status = status;
   }
-}
-
-function dataUrlToBlob(dataUrl, index) {
-  const m = String(dataUrl || '').match(/^data:(image\/[a-z+.-]+);base64,([A-Za-z0-9+/=]+)$/);
-  if (!m) throw new PublicError(`Некорректный формат изображения №${index + 1}.`, 400);
-  return new Blob([Buffer.from(m[2], 'base64')], { type: m[1] });
 }
 
 function cfUrl(accountId, model) {
@@ -80,9 +73,7 @@ async function analyzeBrief(brief, accountId, token) {
   return String(text).replace(/<think>[\s\S]*?<\/think>/g, '').trim();
 }
 
-async function generateImage(prompt, refs, accountId, token) {
-  // FLUX.1 schnell — только текст (без референсных фото), запрос строго JSON.
-  void refs;
+async function generateImage(prompt, accountId, token) {
   const r = await fetch(cfUrl(accountId, '@cf/black-forest-labs/flux-1-schnell'), {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -110,10 +101,8 @@ async function generateSketch(body) {
   }
 
   const brief = String(body?.prompt || '').trim();
-  const refs = Array.isArray(body?.referenceImages) ? body.referenceImages : [];
   if (!brief) throw new PublicError('Опишите, что хотите изготовить.', 400);
   if (brief.length > MAX_PROMPT) throw new PublicError(`Описание слишком длинное. Максимум ${MAX_PROMPT} символов.`, 400);
-  if (refs.length > MAX_REFS) throw new PublicError(`Можно приложить не больше ${MAX_REFS} изображений.`, 400);
 
   let spec = brief;
   let analyzed = false;
@@ -126,8 +115,8 @@ async function generateSketch(body) {
   }
 
   const prompt = [IMAGE_PROMPT_PREFIX, 'VISUAL DESIGN SPECIFICATION:', spec, 'ORIGINAL CLIENT BRIEF — FINAL AUTHORITY:', brief].join('\n\n');
-  const image = await generateImage(prompt, refs, accountId, token);
-  return { images: [image], count: 1, referenceCount: refs.length, analyzed };
+  const image = await generateImage(prompt, accountId, token);
+  return { images: [image], count: 1, analyzed };
 }
 
 module.exports = async function handler(request, response) {
