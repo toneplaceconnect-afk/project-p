@@ -117,7 +117,9 @@ async function generateSketch(body) {
     console.warn('Анализ описания недоступен, используется исходный текст:', e?.message || e);
   }
 
-  const prompt = [IMAGE_PROMPT_PREFIX, 'VISUAL DESIGN SPECIFICATION:', spec, 'ORIGINAL CLIENT BRIEF — FINAL AUTHORITY:', brief].join('\n\n');
+  let prompt = [IMAGE_PROMPT_PREFIX, 'VISUAL DESIGN SPECIFICATION:', spec, 'ORIGINAL CLIENT BRIEF — FINAL AUTHORITY:', brief].join('\n\n');
+  // Лимит schnell: prompt не длиннее 2048 символов — режем хвост, голова (OBJECT) важнее
+  if (prompt.length > 2000) prompt = prompt.slice(0, 2000);
   const image = await generateImage(prompt, accountId, token);
   return { images: [image], count: 1, analyzed };
 }
