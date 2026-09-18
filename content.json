@@ -43,8 +43,9 @@
       "assets/photo/otoplenie.jpg": "Монтаж отопления",
       "assets/photo/vodosnabzhenie.jpg": "Монтаж водоснабжения",
       "assets/photo/stoly-stol.jpg": "Стол из массива на металлической раме",
-      "assets/photo/krovat.png": "Кровать из металла",
-      "assets/photo/krovat2.png": "Металлическая кровать"
+      "assets/photo/krovat.png": "Кровать из массива и металла",
+      "assets/photo/krovat2.png": "Деревянная кровать на металлическом каркасе",
+      "assets/photo/krjadg.png": "Стол и два кресла из массива и металла"
     }
   },
   "nav": [
@@ -80,7 +81,7 @@
     "categoriesTitle": "Виды работ",
     "lastTitle": "Последний проект",
     "lastProject": {
-      "title": "Кровать из металла",
+      "title": "Кровать",
       "href": "works.html",
       "photo": "assets/photo/krovat2.png"
     }
@@ -92,6 +93,7 @@
       "Беседки и навесы",
       "Мангалы и грили",
       "Мебель",
+      "Уличная мебель",
       "Изделия из металла",
       "Отопление",
       "Водоснабжение"
@@ -189,10 +191,17 @@
         "href": "#contact"
       },
       {
-        "title": "Кровать из металла",
-        "cat": "Изделия из металла",
+        "title": "Кровать",
+        "cat": "Мебель",
         "photo": "assets/photo/krovat.png",
-        "text": "Кровати из металла на заказ. Порошковая окраска.",
+        "text": "Массив дерева и металл. Порошковая окраска.",
+        "href": "#contact"
+      },
+      {
+        "title": "Кряж",
+        "cat": "Уличная мебель",
+        "photo": "assets/photo/krjadg.png",
+        "text": "Стол и два кресла. Массив дерева и металл.",
         "href": "#contact"
       }
     ],
@@ -215,7 +224,6 @@
     "sur": "Примеры",
     "title": "Варианты <strong>изделий</strong>",
     "button": "Весь каталог",
-    "linkText": "Смотреть работу",
     "slides": [
       {
         "title": "Ворота и навес",
@@ -244,6 +252,20 @@
         "intro": "Массив на сварной раме, скрытое крепление столешницы",
         "photo": "assets/photo/stol-obedenny.jpg",
         "href": "work.html"
+      },
+      {
+        "title": "Кровать",
+        "cat": "Мебель",
+        "intro": "Массив дерева и металл, порошковая окраска",
+        "photo": "assets/photo/krovat.png",
+        "href": "works.html"
+      },
+      {
+        "title": "Кряж",
+        "cat": "Уличная мебель",
+        "intro": "Стол и два кресла. Массив дерева и металл.",
+        "photo": "assets/photo/krjadg.png",
+        "href": "works.html"
       }
     ]
   },

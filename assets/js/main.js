@@ -650,3 +650,84 @@
     btn.blur();
   });
 })();
+
+/* Просмотр фото (слайдер «Варианты изделий»): реальный размер, уменьшение, тач */
+(function () {
+  'use strict';
+  const items = Array.from(document.querySelectorAll('[data-zoom]'));
+  if (!items.length) return;
+  let overlay = null, overlayImg = null, scale = 1, x = 0, y = 0;
+  const apply = () => { overlayImg.style.transform = 'translate(' + x + 'px, ' + y + 'px) scale(' + scale + ')'; };
+  function close() {
+    if (!overlay) return;
+    overlay.classList.remove('is-open');
+    document.documentElement.classList.remove('cz-open');
+    if (window.__lenis) window.__lenis.start();
+  }
+  function setScale(s) { scale = Math.max(0.5, Math.min(5, s)); x = 0; y = 0; apply(); }
+  function naturalScale() {
+    if (!overlayImg.naturalWidth) return 1;
+    return Math.max(overlayImg.naturalWidth / overlayImg.clientWidth, overlayImg.naturalHeight / overlayImg.clientHeight);
+  }
+  function toggleFit() {
+    if (scale !== 1) { setScale(1); return; }
+    const n = naturalScale();
+    setScale(n > 1.05 ? n : 1);
+  }
+  function open(src) {
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.className = 'czoom';
+      overlay.setAttribute('role', 'dialog');
+      overlay.setAttribute('aria-label', 'Просмотр фото');
+      overlay.innerHTML = '<div class="czoom__bar"><div class="czoom__title">Фото</div><div class="czoom__ui"><button type="button" data-z="out" aria-label="Уменьшить">\u2212</button><button type="button" data-z="fit" aria-label="Реальный размер">100%</button><button type="button" data-z="in" aria-label="Увеличить">+</button><button type="button" data-z="close" aria-label="Закрыть">\u00d7</button></div></div><div class="czoom__stage"><img class="czoom__img" draggable="false" alt="Фото изделия"></div>';
+      document.body.appendChild(overlay);
+      overlayImg = overlay.querySelector('.czoom__img');
+      const stage = overlay.querySelector('.czoom__stage');
+      overlay.querySelector('[data-z="close"]').onclick = close;
+      overlay.querySelector('[data-z="out"]').onclick = () => setScale(scale - 0.25);
+      overlay.querySelector('[data-z="in"]').onclick = () => setScale(scale + 0.25);
+      overlay.querySelector('[data-z="fit"]').onclick = toggleFit;
+      stage.addEventListener('click', (e) => { if (e.target === stage) close(); });
+      let moved = false, drag = false, sx = 0, sy = 0;
+      overlayImg.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return;
+        drag = true; moved = false; sx = e.clientX - x; sy = e.clientY - y;
+        overlayImg.classList.add('is-dragging');
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (!drag) return;
+        if (Math.abs(e.clientX - sx - x) + Math.abs(e.clientY - sy - y) > 4) moved = true;
+        x = e.clientX - sx; y = e.clientY - sy; apply();
+      });
+      window.addEventListener('mouseup', () => { drag = false; overlayImg.classList.remove('is-dragging'); });
+      overlayImg.addEventListener('click', () => { if (moved) { moved = false; return; } toggleFit(); });
+      stage.addEventListener('wheel', (e) => { e.preventDefault(); setScale(scale + (e.deltaY < 0 ? 0.2 : -0.2)); }, { passive: false });
+      let pinch = 0, tdrag = false;
+      overlayImg.addEventListener('touchstart', (e) => {
+        moved = false;
+        if (e.touches.length === 1) { tdrag = true; sx = e.touches[0].clientX - x; sy = e.touches[0].clientY - y; }
+        if (e.touches.length === 2) { tdrag = false; pinch = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); }
+      }, { passive: true });
+      overlayImg.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (e.touches.length === 1 && tdrag) {
+          if (Math.abs(e.touches[0].clientX - sx - x) + Math.abs(e.touches[0].clientY - sy - y) > 8) moved = true;
+          x = e.touches[0].clientX - sx; y = e.touches[0].clientY - sy; apply();
+        }
+        if (e.touches.length === 2 && pinch) {
+          const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+          scale = Math.max(0.5, Math.min(5, scale * (d / pinch))); pinch = d; x = 0; y = 0; apply(); moved = true;
+        }
+      }, { passive: false });
+      overlayImg.addEventListener('touchend', () => { tdrag = false; pinch = 0; }, { passive: true });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    }
+    overlayImg.src = src;
+    setScale(1);
+    overlay.classList.add('is-open');
+    document.documentElement.classList.add('cz-open');
+    if (window.__lenis) window.__lenis.stop();
+  }
+  items.forEach((img) => img.addEventListener('click', () => open(img.currentSrc || img.src)));
+})();

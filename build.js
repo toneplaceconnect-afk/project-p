@@ -248,8 +248,7 @@ function worksSlider({ transparent = false, anime = false, offset = 0 } = {}) {
             <div class="swiper-wrapper">
               ${items.map((w) => `<div class="swiper-slide">
                 <div class="sphoto__card">
-                  <a class="sphoto__link" href="${w.href || 'works.html'}" data-cursor="-hidden"><div class="sphoto__btn"><div class="sphoto__btn-txt">${sl.linkText}</div><div class="sphoto__icon">${ICON_ARROW}</div></div></a>
-                  <img class="sphoto__img" src="${w.photo}" alt="${attr(w.title)}" data-cursor-text="Листай">
+                  <img class="sphoto__img" src="${w.photo}" alt="${attr(w.title)}" data-zoom data-cursor-text="Увеличить">
                 </div>
               </div>`).join('\n              ')}
             </div>
