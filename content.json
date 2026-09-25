@@ -47,7 +47,7 @@
   },
   "media": {
     "heroVideo": "assets/video/hero.mp4",
-    "heroPoster": "assets/video/hero-poster.jpg",
+    "heroPoster": "",
     "alts": {
       "assets/photo/zabory-vorota.jpg": "Ворота, забор и навес",
       "assets/photo/vorota-zabor.jpg": "Откатные ворота и забор на сварном каркасе",
