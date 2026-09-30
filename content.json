@@ -255,6 +255,15 @@
         "cats": [
           "Уличная мебель"
         ]
+      },
+      {
+        "title": "photo_2026-09-30_11-44-07",
+        "cats": [
+          "Мебель"
+        ],
+        "photo": "assets/photo/photo-2026-09-30-11-44-07.jpg",
+        "text": "Описание добавим после согласования: материалы, размеры и покрытие — под задачу.",
+        "href": "#contact"
       }
     ],
     "galleryPool": [
@@ -269,7 +278,8 @@
       "assets/photo/vorota-zabor.jpg",
       "assets/photo/izdeliya-iz-metalla.jpg",
       "assets/photo/stol-obedenny.jpg",
-      "assets/photo/mangaly.jpg"
+      "assets/photo/mangaly.jpg",
+      "assets/photo/photo-2026-09-30-11-44-07.jpg"
     ]
   },
   "slider": {
