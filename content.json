@@ -71,6 +71,10 @@
   },
   "nav": [
     {
+      "href": "index.html",
+      "label": "Главная"
+    },
+    {
       "href": "about.html",
       "label": "О нас"
     },
