@@ -653,10 +653,10 @@
   });
 })();
 
-/* Просмотр фото (слайдер «Варианты изделий»): реальный размер, уменьшение, тач */
+/* Просмотр фото (слайдер «Варианты изделий» и каталог работ): реальный размер, уменьшение, тач */
 (function () {
   'use strict';
-  const items = Array.from(document.querySelectorAll('[data-zoom]'));
+  const items = Array.from(document.querySelectorAll('[data-zoom],[data-zoom-src]'));
   if (!items.length) return;
   let overlay = null, overlayImg = null, scale = 1, x = 0, y = 0;
   const apply = () => { overlayImg.style.transform = 'translate(' + x + 'px, ' + y + 'px) scale(' + scale + ')'; };
@@ -731,5 +731,12 @@
     document.documentElement.classList.add('cz-open');
     if (window.__lenis) window.__lenis.stop();
   }
-  items.forEach((img) => img.addEventListener('click', () => open(img.currentSrc || img.src)));
+  items.forEach((el) => {
+    const src = () => el.dataset.zoomSrc || el.currentSrc || el.src;
+    const activate = (e) => { if (!src()) return; e.preventDefault(); open(src()); };
+    el.addEventListener('click', activate);
+    if (el.getAttribute('role') === 'button') {
+      el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') activate(e); });
+    }
+  });
 })();

@@ -455,10 +455,9 @@ pages['works.html'] = {
       ${c.catalog.items.map((w, i) => {
         const more = c.catalog.galleryPool.filter((p) => p !== w.photo);
         const pick = w.gallery && w.gallery.length ? w.gallery : [0, 1, 2, 3, 4].map((k) => more[(i * 2 + k) % more.length]);
-        const href = w.href || '#contact';
         return `<div class="works__wrap${i >= (P.works.visibleCount || 10) ? ' is-hidden-more' : ''}" data-cats="${attr(catsOf(w).join('|'))}">
         <div class="works__item">
-          <div class="works__txt"><a class="works__link clickable-parent" href="${href}" data-cursor-text="Увеличить"><h2 class="works__title">${w.title}</h2><div class="works__desc">${w.text}</div></a></div>
+          <div class="works__txt"><div class="works__link" data-zoom-src="${w.photo}" data-cursor-text="Увеличить" role="button" tabindex="0"><h2 class="works__title">${w.title}</h2><div class="works__desc">${w.text}</div></div></div>
           <div class="works__gallery">
             <div class="works__ci works__ci--featured"><img class="works__img" src="${w.photo}" alt="${attr(w.title)}" data-zoom data-cursor-text="Увеличить"></div>
             <div class="works__more">${pick.filter(Boolean).map((p) => `<div class="works__ci"><img class="works__img" src="${p}" alt="" loading="lazy" data-zoom data-cursor-text="Увеличить"></div>`).join('')}</div>
