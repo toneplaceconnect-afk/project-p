@@ -319,27 +319,22 @@ html.js [data-fade-up] { visibility: hidden; }
 .sphoto .swiper-slide { flex: none; position: relative; width: 100%; height: 100%; max-height: 45em; }
 .sphoto__card { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: var(--radius); background: #2a2a2a; }
 .sphoto__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Удалено — .sphoto__link/.btn больше не используются, сломаны и не нужны
 .sphoto__link { position: absolute; inset: auto 3% 8% auto; z-index: 10; display: flex; gap: 0.5em; justify-content: flex-end; align-items: flex-start; }
-.sphoto__btn {
-  position: absolute; inset: 3% 3% auto auto;
-  display: flex; flex-direction: row; justify-content: center; align-items: center;
-  column-gap: calc(0.5rem * var(--sc));
-  padding: calc(0.5rem * var(--sc)) calc(1.5rem * var(--sc));
-  background: var(--black); border-radius: 50px; transition: background-color 0.3s ease-in-out;
-}
+.sphoto__btn { position: absolute; inset: 3% 3% auto auto; display: flex; flex-direction: row; justify-content: center; align-items: center; column-gap: calc(0.5rem * var(--sc)); padding: calc(0.5rem * var(--sc)) calc(1.5rem * var(--sc)); background: var(--black); border-radius: 50px; transition: background-color 0.3s ease-in-out; }
 .sphoto__btn:hover { background: rgba(24, 24, 24, 0.6); }
 .sphoto__btn-txt { color: var(--white); white-space: nowrap; font-size: 0.875rem; text-transform: uppercase; font-weight: 400; }
 .sphoto__icon { width: 0.8em; height: 0.8em; display: flex; }
-
-@media (min-width: 1280px) { .slist__intro { max-width: 350px; } }
-@media (min-width: 1440px) { .slist__intro { max-width: 450px; } }
+*/
 @media (max-width: 991px) {
   .sf__list { gap: 1em; justify-content: flex-start; width: 100%; padding-bottom: 1.25em; }
   .sf__photo { width: 100%; }
   .sphoto__overflow { height: 80vw; }
   .slist__slide.swiper-slide { height: 100%; }
   .sf__footer { display: none; }
-  .sphoto__link { top: 3%; bottom: auto; }
+  /* Удалено — .sphoto__link не используется
+.sphoto__link { top: 3%; bottom: auto; }
+*/
   .slist__title { font-size: 4.2rem; }
   .slist__arrow { font-size: 3.2rem; }
 }

@@ -23,6 +23,16 @@ const alt = (src, fallback = '') => attr((c.media.alts || {})[src] || strip(fall
 // Разделы позиции: новый формат — список cats, старый — одиночный cat
 const catsOf = (x) => (Array.isArray(x.cats) && x.cats.length ? x.cats : [x.cat]).filter(Boolean);
 const strip = (v = '') => String(v).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+// В поле контента можно положить и фото, и короткое видео — админка даёт пикер с mp4.
+// Раньше такой путь всегда попадал в <img>, и видео показывалось сломанной картинкой.
+const isVideoSrc = (src = '') => /\.mp4$/i.test(String(src));
+const mediaEl = (src, { cls = '', altText = '', attrs = '' } = {}) => {
+  const s = attr(src || '');
+  if (isVideoSrc(s)) {
+    return `<video class="${cls}" src="${s}"${attrs ? ' ' + attrs : ''} autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>`;
+  }
+  return `<img class="${cls}" src="${s}" alt="${altText}"${attrs ? ' ' + attrs : ''}>`;
+};
 
 /* ---------- Иконки и логотип ---------- */
 const ICON_CHEVRON = `<svg viewBox="0 0 8 12" width="100%" height="100%" fill="none" stroke="currentColor" stroke-width="1.4"><polyline points="1.5,1 6.5,6 1.5,11"/></svg>`;
@@ -143,7 +153,7 @@ function worksMenu() {
         <h3 class="wmenu__h3">${d.lastTitle}</h3>
         <div class="lastp">
           <div class="lastp__left"><a class="clickable-parent" href="${d.lastProject.href}" data-cursor-text="Смотреть"><h4 class="lastp__title" data-cursor="-fusion">${d.lastProject.title}</h4></a></div>
-          <div class="lastp__img-wrap"><img class="lastp__img" src="${d.lastProject.photo}" alt="${alt(d.lastProject.photo, d.lastProject.title)}"></div>
+          <div class="lastp__img-wrap">${mediaEl(d.lastProject.photo, { cls: 'lastp__img', altText: alt(d.lastProject.photo, d.lastProject.title) })}</div>
         </div>
       </div>
     </div>
@@ -279,7 +289,7 @@ function directionsBlock({ variant = '', photo } = {}) {
       <h2 class="sec-head__title">${d.title}</h2>
     </div>
     <div class="team__grid">
-      <div class="team__left"><a class="team__img-wrap" href="team.html" data-cursor-text="Открыть"><img class="team__img" src="${src}" alt="${alt(src, d.sur)}"></a></div>
+      <div class="team__left"><a class="team__img-wrap" href="team.html" data-cursor-text="Открыть">${mediaEl(src, { cls: 'team__img', altText: alt(src, d.sur) })}</a></div>
       <div class="team__right"><div class="team__right-wrap team__right-wrap--dirs">
         <div class="team__txt">${t(d.text)}</div>
         <ul class="dirs">
@@ -478,7 +488,7 @@ pages['work.html'] = {
   description: P.work.description,
   body: `
 <section class="hero hero--work" id="hero">
-  <img class="hero__media hero__media--dim" src="${P.work.heroPhoto}" alt="">
+  ${mediaEl(P.work.heroPhoto, { cls: 'hero__media hero__media--dim' })}
   <div class="hero__inner hero__inner--work">
     <div class="whero">
       <div class="whero__left">
@@ -537,7 +547,7 @@ pages['about.html'] = {
 <section class="asec">
   <div class="container">
     <div class="asec__grid">
-      <div class="asec__col-img"><div class="asec__img-wrap" data-parallax><img class="asec__img" src="${P.about.block1.photo}" alt="${alt(P.about.block1.photo, P.about.block1.title)}"></div></div>
+      <div class="asec__col-img"><div class="asec__img-wrap" data-parallax>${mediaEl(P.about.block1.photo, { cls: 'asec__img', altText: alt(P.about.block1.photo, P.about.block1.title) })}</div></div>
       <div class="asec__col-txt">
         <h2 class="asec__title">${P.about.block1.title}</h2>
         <p class="asec__text">${t(P.about.block1.text)}<br><br>${c.directions.items.map((d) => `→ <strong>${d.title}</strong>: ${d.text}`).join('<br><br>')}${P.about.block1.extra ? '<br><br>' + P.about.block1.extra : ''}</p>
@@ -558,7 +568,7 @@ pages['about.html'] = {
         </ul></div>
         ${btn(P.about.block2.button, P.about.block2.buttonHref)}
       </div>
-      <div class="asec__col-img asec__col-img--right"><div class="asec__img-wrap" data-parallax><img class="asec__img" src="${P.about.block2.photo}" alt="${alt(P.about.block2.photo, P.about.block2.title)}"></div></div>
+      <div class="asec__col-img asec__col-img--right"><div class="asec__img-wrap" data-parallax>${mediaEl(P.about.block2.photo, { cls: 'asec__img', altText: alt(P.about.block2.photo, P.about.block2.title) })}</div></div>
     </div>
     <img class="asec__svg" src="assets/img/line-art.svg" alt="">
   </div>
@@ -581,7 +591,7 @@ pages['team.html'] = {
   body: `
 <div class="thero" id="hero-team">
   <h1 class="thero__title" data-split data-chars data-cursor="-fusion-big">${P.team.h1}</h1>
-  <div class="thero__img-wrap" data-parallax><img class="thero__img" src="${P.team.heroPhoto}" alt="${alt(P.team.heroPhoto, P.team.title)}"></div>
+  <div class="thero__img-wrap" data-parallax>${mediaEl(P.team.heroPhoto, { cls: 'thero__img', altText: alt(P.team.heroPhoto, P.team.title) })}</div>
 </div>
 <section class="story" data-anime-one>
   <div class="container story__inner">
@@ -612,7 +622,7 @@ ${aboutColumns(P.team.columnsIntro)}
       <div class="story__title">${P.team.loftTitle}</div>
     </div>
     <div class="tsec__grid">
-      <div class="tsec__col-img"><div class="tsec__img-wrap"><img class="tsec__img" src="${P.team.loftPhoto}" alt="${alt(P.team.loftPhoto, P.team.loftSur)}"></div></div>
+      <div class="tsec__col-img"><div class="tsec__img-wrap">${mediaEl(P.team.loftPhoto, { cls: 'tsec__img', altText: alt(P.team.loftPhoto, P.team.loftSur) })}</div></div>
       <div class="tsec__col">
         <p class="story__text">${t(P.team.loftText)}</p>
         <div class="tsec__footer">${btn(P.team.loftButton, 'works.html')}</div>
@@ -661,7 +671,7 @@ pages['expertise.html'] = {
 <ul class="acc" data-cursor="-fusion">
   ${P.expertise.accordion.map((a, i) => `<li class="acc__item${i === 0 ? ' selected' : ''}">
     <h3 class="acc__title">${a.title}</h3>
-    <div class="acc__img-wrap"><img class="acc__img" src="${a.photo}" alt="${attr(a.title)}"></div>
+    <div class="acc__img-wrap">${mediaEl(a.photo, { cls: 'acc__img', altText: attr(a.title) })}</div>
   </li>`).join('\n  ')}
 </ul>
 ${directionsBlock({ photo: P.expertise.directionsPhoto })}`,
@@ -850,7 +860,7 @@ function seoHead(file, p) {
     `<meta property="og:title" content="${attr(title)}">`,
     `<meta property="og:description" content="${attr(description)}">`,
     url ? `<meta property="og:url" content="${url}">` : '',
-    SITE_URL ? `<meta property="og:image" content="${SITE_URL}/${c.media.heroPoster}">` : '',
+    SITE_URL ? `<meta property="og:image" content="${SITE_URL}/assets/photo/vorota-zabor.jpg"><meta property="og:image:width" content="1600"><meta property="og:image:height" content="900"><meta property="og:image:alt" content="Наши работы — металлоконструкции и изделия">` : '',
     `<meta name="twitter:card" content="summary_large_image">`,
     GEO.region ? `<meta name="geo.region" content="RU-KK">` : '',
     GEO.city ? `<meta name="geo.placename" content="${attr(GEO.city)}">` : '',

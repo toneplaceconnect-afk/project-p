@@ -47,14 +47,6 @@
 .cform__action--danger:not(:disabled):hover { background: rgba(224, 103, 79, 0.12); border-color: #e0674f; }
 
 /* Загрузка фото */
-.cform__thumb-name { font-size: 0.875rem; color: var(--dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 12rem; }
-.cform__thumb-remove {
-  position: absolute; top: 50%; right: 0.5rem; transform: translateY(-50%);
-  width: 1.5rem; height: 1.5rem; border: 0; border-radius: 50%;
-  background: transparent; color: var(--white); font-size: 1.2rem; line-height: 1; cursor: pointer;
-}
-.cform__thumb-remove:hover { color: var(--wheat); }
-
 /* Отправка и статус */
 .cform__submit-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; }
 .btn--solid { background: var(--wheat); border-color: var(--wheat); color: var(--black); padding: 0.9rem 1.6rem; }
