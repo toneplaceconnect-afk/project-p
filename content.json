@@ -264,6 +264,15 @@
         "photo": "assets/photo/photo-2026-09-30-11-44-07.jpg",
         "text": "Описание добавим после согласования: материалы, размеры и покрытие — под задачу.",
         "href": "#contact"
+      },
+      {
+        "title": "napr",
+        "cats": [
+          "Металлоконструкции"
+        ],
+        "photo": "assets/photo/napr.png",
+        "text": "Описание добавим после согласования: материалы, размеры и покрытие — под задачу.",
+        "href": "#contact"
       }
     ],
     "galleryPool": [
@@ -279,7 +288,8 @@
       "assets/photo/izdeliya-iz-metalla.jpg",
       "assets/photo/stol-obedenny.jpg",
       "assets/photo/mangaly.jpg",
-      "assets/photo/photo-2026-09-30-11-44-07.jpg"
+      "assets/photo/photo-2026-09-30-11-44-07.jpg",
+      "assets/photo/napr.png"
     ]
   },
   "slider": {
@@ -345,7 +355,7 @@
   },
   "directions": {
     "sur": "Направления работ",
-    "title": "Делаю то, что <strong>должно стоять десятки лет</strong>",
+    "title": "Делаю то, что <strong>должно служить десятки лет</strong>",
     "text": "Сечение трубы и шаг столбов считаю под снеговой и ветровой район вашего участка. Мощность котла и секции радиаторов — покомнатно, а не «в среднем по дому».",
     "button": "Обсудить задачу",
     "items": [
