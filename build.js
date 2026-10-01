@@ -458,10 +458,10 @@ pages['works.html'] = {
         const href = w.href || '#contact';
         return `<div class="works__wrap${i >= (P.works.visibleCount || 10) ? ' is-hidden-more' : ''}" data-cats="${attr(catsOf(w).join('|'))}">
         <div class="works__item">
-          <div class="works__txt"><a class="works__link clickable-parent" href="${href}" data-cursor-text="${href.startsWith('#') ? 'Заказать' : 'Смотреть'}"><h2 class="works__title">${w.title}</h2><div class="works__desc">${w.text}</div></a></div>
+          <div class="works__txt"><a class="works__link clickable-parent" href="${href}" data-cursor-text="Увеличить"><h2 class="works__title">${w.title}</h2><div class="works__desc">${w.text}</div></a></div>
           <div class="works__gallery">
-            <div class="works__ci works__ci--featured"><img class="works__img" src="${w.photo}" alt="${attr(w.title)}"></div>
-            <div class="works__more">${pick.filter(Boolean).map((p) => `<div class="works__ci"><img class="works__img" src="${p}" alt="" loading="lazy"></div>`).join('')}</div>
+            <div class="works__ci works__ci--featured"><img class="works__img" src="${w.photo}" alt="${attr(w.title)}" data-zoom data-cursor-text="Увеличить"></div>
+            <div class="works__more">${pick.filter(Boolean).map((p) => `<div class="works__ci"><img class="works__img" src="${p}" alt="" loading="lazy" data-zoom data-cursor-text="Увеличить"></div>`).join('')}</div>
           </div>
         </div>
       </div>`;

@@ -619,7 +619,7 @@ html:not(.js) .loader { display: none; }
   clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); transition: all 0.4s ease-in-out;
 }
 .works__ci--featured { height: auto; margin-right: 1rem; }
-.works__img { display: block; width: 100%; height: auto; filter: grayscale(0%); transform: scale(1); transition: all 0.4s ease-in-out; }
+.works__img { display: block; width: 100%; height: auto; filter: grayscale(0%); transform: scale(1); transition: all 0.4s ease-in-out; cursor: zoom-in; }
 .works__item:hover .works__img { filter: grayscale(80%); transform: scale(1.05); }
 .works__item:hover .works__ci { clip-path: polygon(0% 10%, 100% 10%, 100% 100%, 0% 100%); }
 .works__pagination { padding-top: 5rem; }
