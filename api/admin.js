@@ -109,7 +109,9 @@ const gh = {
   },
   async list(dir) {
     const data = await this.call(`${this.base}${dir}?ref=${this.branch}`);
-    if (!Array.isArray(data)) return [];
+    if (!Array.isArray(data)) {
+      throw new PublicError(`Список файлов ${dir} недоступен. Проверьте GITHUB_TOKEN и GITHUB_BRANCH (сейчас ветка «${this.branch}»).`, 502);
+    }
     return data.filter((x) => x.type === 'file').map((x) => ({ path: `${dir}/${x.name}`, size: x.size }));
   },
 };

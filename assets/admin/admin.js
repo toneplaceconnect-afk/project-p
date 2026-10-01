@@ -246,7 +246,7 @@
         value = file;
         set(path, file);
         draw(file);
-      });
+      }, value);
     });
     var clear = el('button', 'btn btn--mini btn--danger', 'Убрать');
     clear.type = 'button';
@@ -438,8 +438,10 @@
 
   /* ---------- Библиотека файлов ---------- */
   var pickerCb = null;
-  function openPicker(kind, cb) {
+  var picked = null;
+  function openPicker(kind, cb, current) {
     pickerCb = cb;
+    picked = current || null;
     $('#picker').hidden = false;
     loadMedia(kind);
   }
@@ -458,7 +460,22 @@
       r.files.filter(function (f) {
         return kind !== 'video' || isVideo(f.path);
       }).forEach(function (f) {
-        var tile = el('div', 'tile');
+        var tile = el('div', 'tile tile--pick');
+        tile.setAttribute('role', 'button');
+        tile.setAttribute('tabindex', '0');
+        tile.setAttribute('title', 'Выбрать ' + f.path);
+        if (picked === f.path) tile.classList.add('is-picked');
+        function choose() {
+          picked = f.path;
+          if (pickerCb) pickerCb(f.path);
+          closePicker();
+        }
+        tile.addEventListener('click', choose);
+        tile.addEventListener('keydown', function (e) {
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          e.preventDefault();
+          choose();
+        });
         if (isVideo(f.path)) {
           var v = document.createElement('video');
           v.className = 'tile__img'; v.src = f.path; v.muted = true; v.playsInline = true;
@@ -471,20 +488,15 @@
         var body = el('div', 'tile__body');
         body.appendChild(el('div', 'tile__name', f.path.replace('assets/', '') + ' · ' + Math.round(f.size / 1024) + ' КБ'));
         var tools = el('div', 'tile__tools');
-        var use = el('button', 'btn btn--mini btn--main', 'Выбрать');
-        use.type = 'button';
-        use.addEventListener('click', function () {
-          if (pickerCb) pickerCb(f.path);
-          closePicker();
-        });
         var del = el('button', 'btn btn--mini btn--danger', 'Удалить');
         del.type = 'button';
-        del.addEventListener('click', function () {
+        del.addEventListener('click', function (e) {
+          e.stopPropagation();
           if (!confirm('Удалить файл ' + f.path + '? Если он где-то используется, картинка пропадёт.')) return;
           api('remove', { file: f.path }).then(function () { loadMedia(kind); })
-            .catch(function (e) { alert(e.message); });
+            .catch(function (err) { alert(err.message); });
         });
-        tools.appendChild(use); tools.appendChild(del);
+        tools.appendChild(del);
         body.appendChild(tools);
         tile.appendChild(body);
         grid.appendChild(tile);
