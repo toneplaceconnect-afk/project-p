@@ -14,7 +14,7 @@
   var SECTIONS = [
     { group: 'Общее' },
     { key: 'site', title: 'Контакты и название', hint: 'Название, телефон, почта, Telegram и подписи, которые видны в шапке, меню и подвале.' },
-    { key: 'media', title: 'Видео и фото шапки', hint: 'Видео главной страницы, заставка для него и подписи к фотографиям (alt).' },
+    { key: 'media', title: 'Видео и фото шапки', hint: 'Видео главной страницы, заставка для него, фото превью ссылки (как ссылка выглядит в Telegram и поиске) и подписи к фотографиям (alt).' },
     { key: 'nav', title: 'Меню сайта', hint: 'Пункты верхнего меню. Ссылка — имя файла страницы.' },
     { key: 'dropdown', title: 'Выпадающее меню «Каталог»', hint: 'Появляется при наведении на «Каталог» в шапке.' },
     { key: 'catalog', title: 'Каталог работ', hint: 'Категории для фильтра, карточки работ и фото для галерей.' },
@@ -43,7 +43,7 @@
     contactButton: 'Надпись на кнопке в шапке', telegramNote: 'Подпись под Telegram в подвале',
     telegramNoteMenu: 'Подпись под Telegram в меню', chips: 'Плашки в подвале', marquee: 'Бегущая строка',
     footerNote: 'Приписка в подвале', menuNote: 'Приписка в меню', wordmark: 'Название на сайте (шапка, подвал, экран загрузки)', mark: 'Первая строка — обозначение проекта', brand: 'Вторая строка — имя бренда',
-    heroVideo: 'Видео в шапке', heroPoster: 'Заставка видео', alts: 'Подписи к фотографиям (alt)',
+    heroVideo: 'Видео в шапке', heroPoster: 'Заставка видео', ogImage: 'Фото превью ссылки (Telegram и поиск)', alts: 'Подписи к фотографиям (alt)',
     href: 'Ссылка', label: 'Надпись', title: 'Заголовок', text: 'Текст', lead: 'Вводная фраза',
     intro: 'Вступление', sur: 'Надзаголовок', button: 'Надпись на кнопке', buttonHref: 'Куда ведёт кнопка',
     photo: 'Фото', gallery: 'Галерея', cat: 'Категория', categories: 'Категории фильтра',
@@ -126,7 +126,7 @@
   var isMedia = function (v) { return typeof v === 'string' && MEDIA_RE.test(v); };
   var isVideo = function (v) { return /\.mp4$/i.test(v || ''); };
   // Поля-файлы: значение уже указывает на файл либо ключ называется photo/video/poster
-  var MEDIA_KEY = /^(photo|poster|video|logo)$|(Photo|Video|Poster|Logo)$/;
+  var MEDIA_KEY = /^(photo|poster|video|logo)$|(Photo|Video|Poster|Logo|Image)$/;
   var isMediaField = function (key, value) {
     return isMedia(value) || (value === '' && key.indexOf('/') < 0 && key.indexOf('.') < 0 && MEDIA_KEY.test(key));
   };

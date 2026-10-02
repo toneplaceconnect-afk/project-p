@@ -814,6 +814,28 @@ const SITE_URL = String(S.url || '').replace(/\/+$/, '');
 const GEO = S.geo || {};
 const pageUrl = (file) => (SITE_URL ? SITE_URL + '/' + file.replace(/\.html$/, '').replace(/^index$/, '') : '');
 
+// Фото превью ссылки (Telegram, соцсети, поиск) — меняется в админке: раздел «Видео и фото шапки» → ogImage
+const OG_IMG = (c.media && c.media.ogImage) || 'assets/photo/vorota-zabor.jpg';
+
+// Реальные размеры картинки для og:image:width/height (читаем из JPEG или PNG)
+function imgSize(file) {
+  try {
+    const b = fs.readFileSync(path.join(OUT, file));
+    if (b.length > 24 && b[0] === 0x89 && b[1] === 0x50) return { w: b.readUInt32BE(16), h: b.readUInt32BE(20) };
+    if (b.length > 10 && b[0] === 0xff && b[1] === 0xd8) {
+      let i = 2;
+      while (i + 9 < b.length) {
+        if (b[i] !== 0xff) { i += 1; continue; }
+        const m = b[i + 1];
+        if (m === 0xd8 || m === 0x01 || (m >= 0xd0 && m <= 0xd7)) { i += 2; continue; }
+        if (m === 0xc0 || m === 0xc1 || m === 0xc2) return { w: b.readUInt16BE(i + 7), h: b.readUInt16BE(i + 5) };
+        i += 2 + b.readUInt16BE(i + 2);
+      }
+    }
+  } catch (e) { /* файла может не быть — метки размера просто не поставим */ }
+  return null;
+}
+
 // Разметка организации: поисковик понимает, чем занимаемся и где работаем
 function orgSchema() {
   const data = {
@@ -824,7 +846,7 @@ function orgSchema() {
     telephone: S.phone,
     email: S.email,
     url: SITE_URL || undefined,
-    image: SITE_URL ? SITE_URL + '/' + (c.media.heroPoster || 'assets/photo/vorota-zabor.jpg') : undefined,
+    image: SITE_URL ? SITE_URL + '/' + OG_IMG : undefined,
     address: GEO.region ? { '@type': 'PostalAddress', addressCountry: 'RU', addressRegion: GEO.region, addressLocality: GEO.city } : undefined,
     geo: GEO.lat ? { '@type': 'GeoCoordinates', latitude: GEO.lat, longitude: GEO.lon } : undefined,
     areaServed: [
@@ -852,6 +874,7 @@ function seoHead(file, p) {
   const url = pageUrl(file);
   const title = seoTitleFor(file, p) + ' | ' + S.brand;
   const description = strip(p.description || S.footerNote);
+  const ogDims = imgSize(OG_IMG);
   const tags = [
     url ? `<link rel="canonical" href="${url}">` : '',
     `<meta property="og:type" content="website">`,
@@ -860,7 +883,7 @@ function seoHead(file, p) {
     `<meta property="og:title" content="${attr(title)}">`,
     `<meta property="og:description" content="${attr(description)}">`,
     url ? `<meta property="og:url" content="${url}">` : '',
-    SITE_URL ? `<meta property="og:image" content="${SITE_URL}/assets/photo/vorota-zabor.jpg"><meta property="og:image:width" content="1600"><meta property="og:image:height" content="900"><meta property="og:image:alt" content="Наши работы — металлоконструкции и изделия">` : '',
+    SITE_URL ? `<meta property="og:image" content="${SITE_URL}/${attr(OG_IMG)}">${ogDims ? `<meta property="og:image:width" content="${ogDims.w}"><meta property="og:image:height" content="${ogDims.h}">` : ''}<meta property="og:image:alt" content="Наши работы — металлоконструкции и изделия">` : '',
     `<meta name="twitter:card" content="summary_large_image">`,
     GEO.region ? `<meta name="geo.region" content="RU-NIZ">` : '',
     GEO.city ? `<meta name="geo.placename" content="${attr(GEO.city)}">` : '',
