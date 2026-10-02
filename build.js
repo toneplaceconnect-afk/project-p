@@ -870,6 +870,21 @@ function orgSchema() {
 // Заголовок окна: отдельное СЕО-поле страницы, иначе заголовок блока
 const seoTitleFor = (file, p) => strip(((P[file.replace(/.html$/, "")] || {}).seoTitle) || p.title);
 
+// Яндекс.Метрика, счётчик 113285300: скрипт — в <head> всех страниц, noscript — в <body>
+const YM_SCRIPT = `<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=113285300', 'ym');
+
+    ym(113285300, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<!-- /Yandex.Metrika counter -->`;
+const YM_NOSCRIPT = `<noscript><div><img src="https://mc.yandex.ru/watch/113285300" style="position:absolute; left:-9999px;" alt="" /></div></noscript>`;
+
 function seoHead(file, p) {
   const url = pageUrl(file);
   const title = seoTitleFor(file, p) + ' | ' + S.brand;
@@ -974,6 +989,7 @@ for (const [file, p] of Object.entries(pages)) {
 <meta name="description" content="${attr(strip(p.description || S.footerNote))}">
 <meta name="theme-color" content="#181818">
 ${seoHead(file, p)}
+${YM_SCRIPT}
 ${FAVICON}
 <script>
   // Анимации появления включаются только при работающем JS; если скрипты не загрузились за 8 секунд — показываем страницу как есть
@@ -992,6 +1008,7 @@ ${FAVICON}
 ${head}
 </head>
 <body class="loading" data-page="${file.replace('.html', '')}"${p.gears ? ` data-gears="${p.gears}"` : ''}>
+${YM_NOSCRIPT}
 <div class="page">
 <button class="to-top" type="button" aria-label="Наверх" data-to-top data-cursor="-fusion"><svg viewBox="0 0 24 24" width="100%" height="100%" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg></button>
 ${topbar(file)}
