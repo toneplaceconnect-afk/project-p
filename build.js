@@ -824,7 +824,7 @@ function orgSchema() {
     telephone: S.phone,
     email: S.email,
     url: SITE_URL || undefined,
-    image: SITE_URL ? SITE_URL + '/' + c.media.heroPoster : undefined,
+    image: SITE_URL ? SITE_URL + '/' + (c.media.heroPoster || 'assets/photo/vorota-zabor.jpg') : undefined,
     address: GEO.region ? { '@type': 'PostalAddress', addressCountry: 'RU', addressRegion: GEO.region, addressLocality: GEO.city } : undefined,
     geo: GEO.lat ? { '@type': 'GeoCoordinates', latitude: GEO.lat, longitude: GEO.lon } : undefined,
     areaServed: [
@@ -862,7 +862,7 @@ function seoHead(file, p) {
     url ? `<meta property="og:url" content="${url}">` : '',
     SITE_URL ? `<meta property="og:image" content="${SITE_URL}/assets/photo/vorota-zabor.jpg"><meta property="og:image:width" content="1600"><meta property="og:image:height" content="900"><meta property="og:image:alt" content="Наши работы — металлоконструкции и изделия">` : '',
     `<meta name="twitter:card" content="summary_large_image">`,
-    GEO.region ? `<meta name="geo.region" content="RU-KK">` : '',
+    GEO.region ? `<meta name="geo.region" content="RU-NIZ">` : '',
     GEO.city ? `<meta name="geo.placename" content="${attr(GEO.city)}">` : '',
     GEO.lat ? `<meta name="geo.position" content="${GEO.lat};${GEO.lon}">` : '',
     GEO.lat ? `<meta name="ICBM" content="${GEO.lat}, ${GEO.lon}">` : '',
