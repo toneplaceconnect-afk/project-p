@@ -160,10 +160,17 @@ html.js [data-fade-up] { visibility: hidden; }
 .nav-links__inner { display: flex; column-gap: calc(2rem * var(--sc)); }
 .nav-links__inner .link-u { white-space: nowrap; flex-shrink: 0; }
 .topbar__inner { position: relative; }
+/* Десктоп: ссылки идут в потоке между логотипом и кнопкой «Контакт»,
+   равномерно заполняют эту полосу в одну строку и не могут её перекрыть. */
 @media (min-width: 992px) {
-  .topbar__right .nav-links { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
-  .topbar__right { justify-content: flex-end; }
+  .topbar__inner { display: flex; align-items: center; gap: calc(2rem * var(--sc)); }
+  .topbar__left { flex: 0 0 auto; }
+  .topbar__right { flex: 1 1 0; min-width: 0; justify-content: flex-end; gap: calc(2rem * var(--sc)); }
+  .nav-links { flex: 1 1 0; min-width: 0; width: auto; container-type: inline-size; }
+  .nav-links__inner { width: 100%; justify-content: space-between; column-gap: min(calc(2rem * var(--sc)), 1.6cqw); }
+  .topbar .nav-links__inner .link-u { font-size: min(1.125rem, 2.2cqw); }
   .nav-links__inner .topbar__works { width: auto; }
+  .topbar__menu { flex: 0 0 auto; }
 }
 .topbar__menu { display: flex; justify-content: flex-end; gap: 0.25rem; }
 
