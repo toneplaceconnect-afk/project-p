@@ -18,8 +18,8 @@
     "menuNote": "Цена фиксируется в договоре.",
     "credit": {
       "prefix": "Разработано в",
-      "name": "Точка сборки",
-      "url": "",
+      "name": "Compile Point",
+      "url": "https://compilepoint.space/",
       "logo": ""
     },
     "wordmark": {
