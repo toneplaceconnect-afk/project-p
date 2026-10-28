@@ -175,6 +175,40 @@ function credit() {
     : `<div class="fcredit">${inner}</div>`;
 }
 
+// Окно «Отправить сообщение» в подвале: раскрывается сверху вниз, сообщение уходит в Telegram-бота (/api/send-message)
+function messageForm() {
+  const m = Object.assign({
+    toggle: 'Отправить сообщение',
+    label: 'Ваше сообщение',
+    placeholder: 'Опишите, что нужно сделать: изделие, размеры, адрес объекта…',
+    contactPlaceholder: 'Телефон или Telegram для ответа',
+    submit: 'Отправить',
+  }, S.messageForm || {});
+  return `
+      <div class="footer__msg" data-msg>
+        <button class="footer__msg-toggle link-u" type="button" data-msg-toggle aria-expanded="false" aria-controls="msg-panel" data-cursor="-hidden">${m.toggle}</button>
+        <div class="footer__msg-panel" id="msg-panel" data-msg-panel aria-hidden="true">
+          <div class="footer__msg-clip">
+            <form class="mform" data-msg-form novalidate>
+              <div class="cform__head">
+                <label class="cform__label" for="msg-text">${m.label}</label>
+                <div class="cform__count"><span data-msg-count>0</span> / 2000</div>
+              </div>
+              <textarea class="cform__textarea" id="msg-text" name="message" maxlength="2000" data-msg-text data-lenis-prevent data-cursor="-hidden" placeholder="${attr(m.placeholder)}"></textarea>
+              <input class="mform__input" type="text" name="contact" maxlength="200" autocomplete="off" data-msg-contact data-cursor="-hidden" placeholder="${attr(m.contactPlaceholder)}" aria-label="${attr(m.contactPlaceholder)}">
+              <input class="mform__trap" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" data-msg-trap>
+              <div class="cform__submit-row">
+                <button class="btn btn--solid cform__submit" type="submit" data-msg-submit data-cursor="-fusion">
+                  <span class="btn__list"><span class="btn__text" data-msg-submit-text>${m.submit}</span><span class="btn__icon">${ICON_CHEVRON}</span></span>
+                </button>
+                <div class="cform__status" role="status" aria-live="polite" data-msg-status></div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>`;
+}
+
 function footer() {
   return `
 <div class="footer">
@@ -196,7 +230,7 @@ function footer() {
               ${S.chips.map((chip) => `<div class="labels__chip">${chip}</div>`).join('\n              ')}
             </div>
           </div>
-        </div>
+        </div>${messageForm()}
       </div>
       <div class="footer__logo-wrap"><a href="index.html" aria-label="${attr(S.wordmark.mark + ' ' + S.wordmark.brand)}"><div class="footer__logo" data-cursor="-fusion">${LOGO_BIG}</div></a></div>
       <div class="footer__mentions">
@@ -964,6 +998,7 @@ for (const [file, p] of Object.entries(pages)) {
     `<link rel="stylesheet" href="assets/css/style.css">`,
     needsSwiper ? `<link rel="stylesheet" href="${V}/swiper-bundle.min.css">` : '',
     `<link rel="stylesheet" href="assets/css/create.css">`,
+    `<link rel="stylesheet" href="assets/css/message.css">`,
     /data-calc/.test(p.body) ? `<link rel="stylesheet" href="assets/css/calc.css">` : '',
     /class="prices/.test(p.body) ? `<link rel="stylesheet" href="assets/css/prices.css">` : '',
     `<link rel="stylesheet" href="assets/css/mobile.css">`,
@@ -977,6 +1012,7 @@ for (const [file, p] of Object.entries(pages)) {
     needsSwiper ? `${V}/swiper-bundle.min.js` : '',
     'assets/js/main.js',
     /data-create/.test(p.body) || /<video/.test(main) ? 'assets/js/create.js' : '',
+    'assets/js/message.js',
     ...(p.scripts || []),
   ].filter(Boolean).map((src) => `<script src="${src}"></script>`).join('\n');
 

@@ -1,0 +1,42 @@
+/* =========================================================
+   Подвал: ссылка «Отправить сообщение» и окно, выезжающее сверху вниз
+   ========================================================= */
+.footer__msg { width: 100%; max-width: 1440px; padding: calc(2rem * var(--sc)) calc(1.5rem * var(--sc)) 0; }
+.footer__msg-toggle {
+  display: inline-flex; align-items: center; gap: 0.6em; padding: 0; margin: 0;
+  background: none; border: 0; color: var(--wheat); cursor: pointer;
+  font-family: var(--ff-serif); font-weight: 300; font-size: 1.5rem; line-height: 1.1; letter-spacing: -0.03em;
+}
+.footer__msg-toggle:hover { color: var(--white); }
+.footer__msg-toggle::before {
+  content: ""; flex: none; width: 0.45em; height: 0.45em;
+  border-right: 1.4px solid currentColor; border-bottom: 1.4px solid currentColor;
+  transform: translateY(-0.12em) rotate(45deg); transition: transform 0.4s ease-in-out;
+}
+.footer__msg.is-open .footer__msg-toggle::before { transform: translateY(0.1em) rotate(-135deg); }
+.footer__msg-toggle::after { bottom: -0.15em; background: var(--wheat); }
+
+/* Слайдер: высота плавно растёт от нуля сверху вниз */
+.footer__msg-panel {
+  display: grid; grid-template-rows: 0fr; visibility: hidden;
+  transition: grid-template-rows 0.55s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.55s;
+}
+.footer__msg.is-open .footer__msg-panel { grid-template-rows: 1fr; visibility: visible; transition-delay: 0s; }
+.footer__msg-clip { min-height: 0; overflow: hidden; }
+
+.mform { display: flex; flex-direction: column; gap: calc(1.25rem * var(--sc)); width: 100%; max-width: 44rem; padding-top: calc(1.5rem * var(--sc)); }
+.mform .cform__textarea { min-height: 9rem; }
+.mform__input {
+  display: block; width: 100%; margin: 0; padding: calc(1rem * var(--sc)) calc(1.5rem * var(--sc));
+  background: var(--black-light); color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius); outline: none;
+  font: 400 1.125rem/1.5 var(--ff-sans); transition: border-color 0.3s ease-in-out;
+}
+.mform__input::placeholder { color: rgba(255, 255, 255, 0.4); }
+.mform__input:focus { border-color: var(--wheat); }
+/* Скрытое поле-ловушка для спам-ботов */
+.mform__trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .footer__msg-panel, .footer__msg-toggle::before { transition: none; }
+}
