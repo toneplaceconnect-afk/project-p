@@ -36,7 +36,7 @@
     }
   },
   "media": {
-    "heroVideo": "assets/video/hero-3.mp4",
+    "heroVideo": "assets/video/hero-4.mp4",
     "heroPoster": "assets/photo/hero-poster.jpg",
     "ogImage": "assets/photo/photo-2026-10-03.jpg",
     "alts": {
@@ -55,9 +55,9 @@
       "assets/photo/otoplenie.jpg": "Монтаж отопления",
       "assets/photo/vodosnabzhenie.jpg": "Монтаж водоснабжения",
       "assets/photo/stoly-stol.jpg": "Стол из массива на металлической раме",
-      "assets/photo/krovat.png": "Кровать из массива и металла",
-      "assets/photo/krovat2.png": "Деревянная кровать на металлическом каркасе",
-      "assets/photo/krjadg.png": "Стол и два кресла из массива и металла"
+      "assets/photo/krovat.jpg": "Кровать из массива и металла",
+      "assets/photo/krovat2.jpg": "Деревянная кровать на металлическом каркасе",
+      "assets/photo/krjadg.jpg": "Стол и два кресла из массива и металла"
     }
   },
   "nav": [
@@ -99,7 +99,7 @@
     "lastProject": {
       "title": "Кровать",
       "href": "works.html",
-      "photo": "assets/photo/krovat2.png"
+      "photo": "assets/photo/krovat2.jpg"
     }
   },
   "catalog": {
@@ -235,7 +235,7 @@
       },
       {
         "title": "Кровать",
-        "photo": "assets/photo/krovat.png",
+        "photo": "assets/photo/krovat.jpg",
         "text": "Массив дерева и металл. Порошковая окраска.",
         "href": "#contact",
         "cats": [
@@ -244,7 +244,7 @@
       },
       {
         "title": "Кряж",
-        "photo": "assets/photo/krjadg.png",
+        "photo": "assets/photo/krjadg.jpg",
         "text": "Стол и два кресла. Массив дерева и металл.",
         "href": "#contact",
         "cats": [
@@ -265,7 +265,7 @@
         "cats": [
           "Металлоконструкции"
         ],
-        "photo": "assets/photo/napr.png",
+        "photo": "assets/photo/napr.jpg",
         "text": "Описание добавим после согласования: материалы, размеры и покрытие — под задачу.",
         "href": "#contact"
       }
@@ -284,7 +284,7 @@
       "assets/photo/stol-obedenny.jpg",
       "assets/photo/mangaly.jpg",
       "assets/photo/photo-2026-09-30-11-44-07.jpg",
-      "assets/photo/napr.png"
+      "assets/photo/napr.jpg"
     ]
   },
   "slider": {
@@ -331,7 +331,7 @@
       {
         "title": "Кровать",
         "intro": "Массив дерева и металл, порошковая окраска",
-        "photo": "assets/photo/krovat.png",
+        "photo": "assets/photo/krovat.jpg",
         "href": "works.html",
         "cats": [
           "Мебель"
@@ -340,7 +340,7 @@
       {
         "title": "Кряж",
         "intro": "Стол и два кресла. Массив дерева и металл.",
-        "photo": "assets/photo/krjadg.png",
+        "photo": "assets/photo/krjadg.jpg",
         "href": "works.html",
         "cats": [
           "Уличная мебель"

@@ -311,14 +311,35 @@
   'use strict';
   const videos = Array.from(document.querySelectorAll('video[autoplay]'));
   if (!videos.length) return;
-  const play = () => videos.forEach((v) => {
+  const offscreen = new Set();
+  const start = (v) => {
+    if (offscreen.has(v)) return;
     v.muted = true;
+    v.setAttribute('playsinline', '');
     if (v.paused) {
       const p = v.play();
       if (p && p.catch) p.catch(() => {});
     }
-  });
+  };
+  const play = () => videos.forEach(start);
   play();
   document.addEventListener('visibilitychange', () => { if (!document.hidden) play(); });
+  // Страница вернулась из кеша «назад/вперёд» (Safari, мобильные браузеры): видео надо запустить заново
+  window.addEventListener('pageshow', play);
+  // Видео догрузилось уже после первой попытки запуска (медленная сеть): пробуем ещё раз
+  videos.forEach((v) => ['loadeddata', 'canplay'].forEach((ev) => v.addEventListener(ev, () => start(v))));
   ['touchstart', 'click', 'scroll'].forEach((ev) => window.addEventListener(ev, play, { once: true, passive: true }));
+  // Видео вне экрана (скрытый лоадер, блоки ниже по странице) не крутим: экономит трафик, батарею и процессор телефона
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+      if (e.isIntersecting) {
+        offscreen.delete(e.target);
+        start(e.target);
+      } else {
+        offscreen.add(e.target);
+        if (!e.target.paused) e.target.pause();
+      }
+    }), { threshold: 0.01 });
+    videos.forEach((v) => io.observe(v));
+  }
 })();
