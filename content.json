@@ -36,8 +36,8 @@
     }
   },
   "media": {
-    "heroVideo": "assets/video/hero.mp4",
-    "heroPoster": "",
+    "heroVideo": "assets/video/hero-2.mp4",
+    "heroPoster": "assets/photo/hero-poster.jpg",
     "ogImage": "assets/photo/photo-2026-10-03.jpg",
     "alts": {
       "assets/photo/zabory-vorota.jpg": "Ворота, забор и навес",
